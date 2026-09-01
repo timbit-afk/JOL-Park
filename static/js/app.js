@@ -692,6 +692,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================
 
     function showConfirmation() {
+        console.log("🔥 showConfirmation ЗАПУЩЕН");
         if (
             !selectedSpot ||
             !selectedLocation
