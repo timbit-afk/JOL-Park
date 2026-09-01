@@ -1,0 +1,302 @@
+[
+{
+  "model": "app.parkinglocation",
+  "pk": 4,
+  "fields": {
+    "name": "Asia Mall",
+    "address": "пр. Чынгыза Айтматова, 3",
+    "latitude": 42.8588,
+    "longitude": 74.582
+  }
+},
+{
+  "model": "app.parkinglocation",
+  "pk": 5,
+  "fields": {
+    "name": "Bishkek Park",
+    "address": "ул. Киевская, 148",
+    "latitude": 42.8746,
+    "longitude": 74.6007
+  }
+},
+{
+  "model": "app.parkinglocation",
+  "pk": 6,
+  "fields": {
+    "name": "Vefa Center",
+    "address": "ул. Горького, 27/1",
+    "latitude": 42.8636,
+    "longitude": 74.603
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 1,
+  "fields": {
+    "location": 4,
+    "number": "A1",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 2,
+  "fields": {
+    "location": 4,
+    "number": "A2",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 3,
+  "fields": {
+    "location": 4,
+    "number": "A3",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 4,
+  "fields": {
+    "location": 4,
+    "number": "A4",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 5,
+  "fields": {
+    "location": 4,
+    "number": "A5",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 6,
+  "fields": {
+    "location": 4,
+    "number": "A6",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 7,
+  "fields": {
+    "location": 4,
+    "number": "A7",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 8,
+  "fields": {
+    "location": 4,
+    "number": "A8",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 9,
+  "fields": {
+    "location": 4,
+    "number": "A9",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 10,
+  "fields": {
+    "location": 4,
+    "number": "A10",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 11,
+  "fields": {
+    "location": 5,
+    "number": "A1",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 12,
+  "fields": {
+    "location": 5,
+    "number": "A2",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 13,
+  "fields": {
+    "location": 5,
+    "number": "A3",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 14,
+  "fields": {
+    "location": 5,
+    "number": "A4",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 15,
+  "fields": {
+    "location": 5,
+    "number": "A5",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 16,
+  "fields": {
+    "location": 5,
+    "number": "A6",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 17,
+  "fields": {
+    "location": 5,
+    "number": "A7",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 18,
+  "fields": {
+    "location": 5,
+    "number": "A8",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 19,
+  "fields": {
+    "location": 5,
+    "number": "A9",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 20,
+  "fields": {
+    "location": 5,
+    "number": "A10",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 21,
+  "fields": {
+    "location": 6,
+    "number": "A1",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 22,
+  "fields": {
+    "location": 6,
+    "number": "A2",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 23,
+  "fields": {
+    "location": 6,
+    "number": "A3",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 24,
+  "fields": {
+    "location": 6,
+    "number": "A4",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 25,
+  "fields": {
+    "location": 6,
+    "number": "A5",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 26,
+  "fields": {
+    "location": 6,
+    "number": "A6",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 27,
+  "fields": {
+    "location": 6,
+    "number": "A7",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 28,
+  "fields": {
+    "location": 6,
+    "number": "A8",
+    "is_occupied": true
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 29,
+  "fields": {
+    "location": 6,
+    "number": "A9",
+    "is_occupied": false
+  }
+},
+{
+  "model": "app.parkingspot",
+  "pk": 30,
+  "fields": {
+    "location": 6,
+    "number": "A10",
+    "is_occupied": false
+  }
+}
+]
