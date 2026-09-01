@@ -1,10 +1,7 @@
 from pathlib import Path
 import os
+import dj_database_url
 
-
-# =========================================================
-# BASE
-# =========================================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -19,6 +16,7 @@ SECRET_KEY = os.environ.get(
 )
 
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
@@ -56,8 +54,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
-    # WhiteNoise — раздача CSS / JS / изображений в production
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -111,24 +107,16 @@ WSGI_APPLICATION = "core.wsgi.application"
 # =========================================================
 # DATABASE
 # =========================================================
-#
-# Render:
-#     DATABASE_URL -> PostgreSQL
-#
-# Local:
-#     SQLite
-#
-# =========================================================
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
-
 if DATABASE_URL:
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": DATABASE_URL,
-        }
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
 else:
     DATABASES = {
@@ -180,7 +168,6 @@ LANGUAGE_CODE = "ru-ru"
 TIME_ZONE = "Asia/Bishkek"
 
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -197,7 +184,6 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
-# WhiteNoise storage
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -231,7 +217,6 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # =========================================================
 
 LOGIN_URL = "/login/"
-
 LOGIN_REDIRECT_URL = "/"
-
 LOGOUT_REDIRECT_URL = "/"
+
