@@ -1118,6 +1118,113 @@
             grid-template-columns: 1fr;
         }
     }
+
+    /* ================= CONFIRMATION OVERLAY ================= */
+
+.confirmation-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(15, 23, 42, .58);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    animation: fadeIn .25s ease;
+}
+
+.confirmation-overlay .confirmation {
+    position: relative;
+
+    width: min(430px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+
+    background: white;
+    border-radius: 28px;
+
+    padding: 38px;
+
+    text-align: center;
+
+    box-shadow:
+        0 35px 100px rgba(0, 0, 0, .25);
+
+    animation: modalIn .3s ease;
+}
+
+.confirmation-overlay h3 {
+    font-size: 22px;
+    margin-bottom: 12px;
+}
+
+.confirmation-overlay p {
+    color: #667085;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.confirmation-overlay .confirmation-icon {
+    width: 72px;
+    height: 72px;
+
+    display: grid;
+    place-items: center;
+
+    margin: 0 auto 22px;
+
+    border-radius: 50%;
+
+    background: #f2f4f7;
+
+    font-size: 32px;
+}
+
+.confirmation-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+
+    margin-top: 25px;
+}
+
+.confirmation-buttons button {
+    min-height: 46px;
+
+    border-radius: 12px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.confirmation-buttons button:hover {
+    transform: translateY(-2px);
+}
+
+.confirmation-overlay .cancel-button {
+    border: 1px solid #e7eaf0;
+    background: #f8fafc;
+    color: #475467;
+}
+
+.confirmation-overlay .confirm-button {
+    border: 0;
+    background: #111827;
+    color: white;
+}
 </style>
 
 
@@ -1568,113 +1675,6 @@
         © 2026 JOL Park · Умная парковка в Бишкеке
     </p>
 </footer>
-
-    /* ================= CONFIRMATION OVERLAY ================= */
-
-.confirmation-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
-
-    background: rgba(15, 23, 42, .58);
-
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-
-    animation: fadeIn .25s ease;
-}
-
-.confirmation-overlay .confirmation {
-    position: relative;
-
-    width: min(430px, 100%);
-    max-height: 90vh;
-    overflow-y: auto;
-
-    background: white;
-    border-radius: 28px;
-
-    padding: 38px;
-
-    text-align: center;
-
-    box-shadow:
-        0 35px 100px rgba(0, 0, 0, .25);
-
-    animation: modalIn .3s ease;
-}
-
-.confirmation-overlay h3 {
-    font-size: 22px;
-    margin-bottom: 12px;
-}
-
-.confirmation-overlay p {
-    color: #667085;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.confirmation-overlay .confirmation-icon {
-    width: 72px;
-    height: 72px;
-
-    display: grid;
-    place-items: center;
-
-    margin: 0 auto 22px;
-
-    border-radius: 50%;
-
-    background: #f2f4f7;
-
-    font-size: 32px;
-}
-
-.confirmation-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-
-    gap: 10px;
-
-    margin-top: 25px;
-}
-
-.confirmation-buttons button {
-    min-height: 46px;
-
-    border-radius: 12px;
-
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 800;
-
-    cursor: pointer;
-
-    transition: .2s;
-}
-
-.confirmation-buttons button:hover {
-    transform: translateY(-2px);
-}
-
-.confirmation-overlay .cancel-button {
-    border: 1px solid #e7eaf0;
-    background: #f8fafc;
-    color: #475467;
-}
-
-.confirmation-overlay .confirm-button {
-    border: 0;
-    background: #111827;
-    color: white;
-}
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
