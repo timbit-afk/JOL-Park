@@ -1,0 +1,1605 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>JOL Park — Умная парковка в Бишкеке</title>
+
+<link rel="preconnect" href="https://unpkg.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+>
+
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+>
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/style.css' %}"
+>
+
+<style>
+    :root {
+        --bg: #f5f7fb;
+        --surface: #ffffff;
+        --surface-soft: #f8fafc;
+        --text: #111827;
+        --muted: #667085;
+        --border: #e7eaf0;
+        --primary: #111827;
+        --primary-hover: #000000;
+        --green: #16a34a;
+        --green-soft: #eaf8ef;
+        --blue: #2563eb;
+        --shadow: 0 20px 60px rgba(15, 23, 42, .08);
+        --radius: 24px;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: "Inter", sans-serif;
+        background:
+            radial-gradient(
+                circle at 80% 0%,
+                rgba(37, 99, 235, .08),
+                transparent 30%
+            ),
+            var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    button {
+        font-family: inherit;
+    }
+
+    /* ================= HEADER ================= */
+
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255,255,255,.82);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(231,234,240,.8);
+    }
+
+    .header-container {
+        width: min(1280px, calc(100% - 40px));
+        height: 76px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        font-size: 21px;
+        font-weight: 800;
+        letter-spacing: -.6px;
+    }
+
+    .logo-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        display: grid;
+        place-items: center;
+        background: #111827;
+        color: white;
+        font-size: 21px;
+        box-shadow: 0 8px 25px rgba(17,24,39,.18);
+    }
+
+    .nav {
+        display: flex;
+        align-items: center;
+        gap: 34px;
+        margin-left: auto;
+    }
+
+    .nav a {
+        color: #667085;
+        font-size: 14px;
+        font-weight: 600;
+        transition: .25s;
+    }
+
+    .nav a:hover {
+        color: #111827;
+    }
+
+    .auth-buttons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .login-link,
+    .register-link {
+        padding: 11px 17px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .25s;
+    }
+
+    .login-link {
+        color: #475467;
+    }
+
+    .login-link:hover {
+        background: #f2f4f7;
+    }
+
+    .register-link {
+        background: #111827;
+        color: white;
+        box-shadow: 0 8px 20px rgba(17,24,39,.14);
+    }
+
+    .register-link:hover {
+        transform: translateY(-2px);
+        background: #000;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        background: #f8fafc;
+        padding: 7px 9px 7px 14px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+    }
+
+    .user-name {
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .logout-link {
+        font-size: 12px;
+        color: #667085;
+        padding: 7px 10px;
+        border-radius: 9px;
+        background: white;
+    }
+
+    /* ================= HERO ================= */
+
+    .hero {
+        width: min(1280px, calc(100% - 40px));
+        margin: auto;
+        min-height: 610px;
+        display: grid;
+        grid-template-columns: 1.15fr .85fr;
+        align-items: center;
+        gap: 80px;
+        padding: 70px 0 90px;
+    }
+
+    .hero-left {
+        animation: heroIn .8s ease both;
+    }
+
+    @keyframes heroIn {
+        from {
+            opacity: 0;
+            transform: translateY(25px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .hero-label,
+    .section-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.8px;
+        margin-bottom: 20px;
+    }
+
+    .hero-label::before,
+    .section-label::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        background: #2563eb;
+        border-radius: 50%;
+        box-shadow: 0 0 0 5px rgba(37,99,235,.1);
+    }
+
+    .hero h1 {
+        max-width: 720px;
+        font-size: clamp(46px, 5.5vw, 78px);
+        line-height: .98;
+        letter-spacing: -4px;
+        font-weight: 800;
+        margin-bottom: 28px;
+    }
+
+    .hero h1 span {
+        display: block;
+        color: #2563eb;
+    }
+
+    .hero-description {
+        max-width: 570px;
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.7;
+        margin-bottom: 35px;
+    }
+
+    .hero-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .primary-button,
+    .secondary-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+        padding: 0 22px;
+        border-radius: 14px;
+        font-size: 14px;
+        font-weight: 700;
+        transition: .3s;
+    }
+
+    .primary-button {
+        background: #111827;
+        color: white;
+        box-shadow: 0 15px 35px rgba(17,24,39,.18);
+    }
+
+    .primary-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(17,24,39,.25);
+    }
+
+    .secondary-button {
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,.75);
+        color: #475467;
+    }
+
+    .secondary-button:hover {
+        background: white;
+        transform: translateY(-3px);
+    }
+
+    /* ================= HERO VISUAL ================= */
+
+    .hero-right {
+        position: relative;
+        min-height: 390px;
+        display: grid;
+        place-items: center;
+        animation: visualIn 1s .15s ease both;
+    }
+
+    @keyframes visualIn {
+        from {
+            opacity: 0;
+            transform: scale(.94);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .hero-orbit {
+        position: absolute;
+        width: 360px;
+        height: 360px;
+        border-radius: 50%;
+        border: 1px solid rgba(37,99,235,.12);
+        animation: rotate 18s linear infinite;
+    }
+
+    .hero-orbit::before,
+    .hero-orbit::after {
+        content: "";
+        position: absolute;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #2563eb;
+    }
+
+    .hero-orbit::before {
+        top: 20px;
+        left: 80px;
+    }
+
+    .hero-orbit::after {
+        right: 30px;
+        bottom: 90px;
+        background: #16a34a;
+    }
+
+    @keyframes rotate {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .hero-card {
+        position: relative;
+        z-index: 2;
+        width: min(390px, 100%);
+        padding: 30px;
+        border-radius: 30px;
+        background: rgba(255,255,255,.8);
+        border: 1px solid rgba(255,255,255,.9);
+        box-shadow: 0 35px 80px rgba(15,23,42,.13);
+        backdrop-filter: blur(25px);
+        transform: rotate(2deg);
+        transition: .4s;
+    }
+
+    .hero-card:hover {
+        transform: rotate(0) translateY(-8px);
+    }
+
+    .hero-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 25px;
+    }
+
+    .hero-card-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        background: #111827;
+        color: white;
+        font-size: 26px;
+    }
+
+    .live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--green-soft);
+        color: var(--green);
+        padding: 7px 10px;
+        border-radius: 100px;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .live-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--green);
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        50% {
+            opacity: .35;
+            transform: scale(.7);
+        }
+    }
+
+    .hero-card h2 {
+        font-size: 25px;
+        letter-spacing: -.8px;
+        margin-bottom: 10px;
+    }
+
+    .hero-card p {
+        color: var(--muted);
+        line-height: 1.7;
+        font-size: 14px;
+    }
+
+    .mini-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .mini-stat {
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        padding: 14px;
+        border-radius: 15px;
+    }
+
+    .mini-stat strong {
+        display: block;
+        font-size: 20px;
+        margin-bottom: 3px;
+    }
+
+    .mini-stat span {
+        color: #98a2b3;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    /* ================= PARKING ================= */
+
+    .parking-section {
+        padding: 100px 0;
+        background: white;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .parking-container,
+    .how-container {
+        width: min(1280px, calc(100% - 40px));
+        margin: auto;
+    }
+
+    .parking-container h2,
+    .how-container h2 {
+        font-size: clamp(34px, 4vw, 52px);
+        letter-spacing: -2px;
+        line-height: 1.05;
+        margin-bottom: 12px;
+    }
+
+    .section-description {
+        color: var(--muted);
+        font-size: 15px;
+        margin-bottom: 35px;
+    }
+
+    /* Search bar */
+
+    .parking-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .search-box {
+        flex: 1;
+        max-width: 440px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 16px;
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+    }
+
+    .search-box span {
+        color: #98a2b3;
+        font-size: 17px;
+    }
+
+    .search-box input {
+        width: 100%;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        font-family: inherit;
+        font-size: 13px;
+        color: var(--text);
+    }
+
+    .status-chip {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--green-soft);
+        color: var(--green);
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .parking-layout {
+        display: grid;
+        grid-template-columns: 1.35fr .65fr;
+        gap: 22px;
+        align-items: stretch;
+    }
+
+    .map-wrapper {
+        min-height: 590px;
+        overflow: hidden;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        background: #eef2f7;
+    }
+
+    #map {
+        width: 100%;
+        height: 590px;
+    }
+
+    #parking-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 590px;
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+
+    #parking-grid::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    #parking-grid::-webkit-scrollbar-thumb {
+        background: #d0d5dd;
+        border-radius: 10px;
+    }
+
+    .parking-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 19px;
+        padding: 18px;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    .parking-card:hover {
+        transform: translateY(-3px);
+        border-color: #cbd5e1;
+        box-shadow: 0 15px 35px rgba(15,23,42,.08);
+    }
+
+    .parking-card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .parking-card h3 {
+        font-size: 15px;
+        margin-bottom: 5px;
+    }
+
+    .parking-card p {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .parking-status {
+        white-space: nowrap;
+        background: var(--green-soft);
+        color: var(--green);
+        padding: 5px 8px;
+        border-radius: 8px;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .parking-card-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 17px;
+        padding-top: 14px;
+        border-top: 1px solid #f0f2f5;
+    }
+
+    .availability {
+        font-size: 11px;
+        color: #667085;
+    }
+
+    .select-parking {
+        background: #111827;
+        color: white;
+        border: 0;
+        padding: 9px 12px;
+        border-radius: 9px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .loading {
+        display: grid;
+        place-items: center;
+        min-height: 150px;
+        color: #98a2b3;
+        font-size: 13px;
+    }
+
+    /* ================= HOW ================= */
+
+    .how-section {
+        padding: 110px 0;
+    }
+
+    .steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-top: 50px;
+    }
+
+    .step {
+        position: relative;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 28px;
+        min-height: 230px;
+        transition: .3s;
+    }
+
+    .step:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow);
+    }
+
+    .step-number {
+        font-size: 13px;
+        color: #2563eb;
+        font-weight: 800;
+        margin-bottom: 55px;
+    }
+
+    .step h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .step p {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.65;
+    }
+
+    /* ================= MODALS ================= */
+
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 5000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(15,23,42,.58);
+        backdrop-filter: blur(8px);
+        animation: fadeIn .25s ease;
+    }
+
+    .modal-overlay.hidden {
+        display: none;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .modal-content,
+    .confirmation {
+        position: relative;
+        width: min(600px, 100%);
+        max-height: 90vh;
+        overflow-y: auto;
+        background: white;
+        border-radius: 28px;
+        padding: 30px;
+        box-shadow: 0 35px 100px rgba(0,0,0,.25);
+        animation: modalIn .3s ease;
+    }
+
+    @keyframes modalIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(.97);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .modal-close {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        width: 36px;
+        height: 36px;
+        border: 0;
+        border-radius: 10px;
+        background: #f2f4f7;
+        color: #667085;
+        font-size: 22px;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .modal-close:hover {
+        background: #e4e7ec;
+        color: #111827;
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding-right: 45px;
+        margin-bottom: 25px;
+    }
+
+    .modal-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 15px;
+        display: grid;
+        place-items: center;
+        background: #111827;
+        color: white;
+        font-size: 22px;
+    }
+
+    .modal-header h2 {
+        font-size: 22px;
+        margin-bottom: 5px;
+    }
+
+    .modal-header p {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .spots-info {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 13px 15px;
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        margin-bottom: 18px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        color: #667085;
+    }
+
+    .legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+
+    .free-dot {
+        background: #16a34a;
+    }
+
+    .occupied-dot {
+        background: #ef4444;
+    }
+
+    .spots-count {
+        margin-left: auto;
+        color: #111827;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .spots-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .spot {
+        min-height: 75px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: #f8fafc;
+        transition: .2s;
+    }
+
+    .spot:not(.occupied) {
+        cursor: pointer;
+    }
+
+    .spot:not(.occupied):hover {
+        border-color: #2563eb;
+        transform: translateY(-2px);
+    }
+
+    .booking-panel {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-top: 20px;
+        padding: 15px;
+        background: #111827;
+        color: white;
+        border-radius: 16px;
+    }
+
+    .booking-panel.hidden {
+        display: none;
+    }
+
+    .selected-place span {
+        display: block;
+        color: #98a2b3;
+        font-size: 10px;
+        margin-bottom: 3px;
+    }
+
+    .selected-place strong {
+        font-size: 17px;
+    }
+
+    .book-button,
+    .confirm-button {
+        border: 0;
+        background: white;
+        color: #111827;
+        padding: 12px 16px;
+        border-radius: 11px;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .book-button:hover,
+    .confirm-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .confirmation {
+        width: min(430px, 100%);
+        text-align: center;
+        padding: 38px;
+    }
+
+    .confirmation .modal-close {
+        right: 15px;
+        top: 15px;
+    }
+
+    .success-icon {
+        width: 72px;
+        height: 72px;
+        display: grid;
+        place-items: center;
+        margin: 5px auto 22px;
+        border-radius: 50%;
+        background: var(--green-soft);
+        color: var(--green);
+        font-size: 32px;
+        font-weight: 800;
+    }
+
+    .confirmation h2 {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+    .confirmation p {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .confirmation-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .cancel-button {
+        border: 1px solid var(--border);
+        background: #f8fafc;
+        color: #475467;
+        border-radius: 11px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    /* ================= FOOTER ================= */
+
+    .footer {
+        padding: 35px 20px;
+        border-top: 1px solid var(--border);
+        background: white;
+        text-align: center;
+        color: #98a2b3;
+        font-size: 11px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 1000px) {
+        .hero {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding-top: 60px;
+        }
+
+        .hero-right {
+            min-height: 340px;
+        }
+
+        .parking-layout {
+            grid-template-columns: 1fr;
+        }
+
+        #parking-grid {
+            max-height: none;
+        }
+
+        .steps {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .header-container {
+            width: min(100% - 24px, 1280px);
+            height: 68px;
+        }
+
+        .nav {
+            display: none;
+        }
+
+        .register-link {
+            display: none;
+        }
+
+        .hero,
+        .parking-container,
+        .how-container {
+            width: min(100% - 24px, 1280px);
+        }
+
+        .hero {
+            min-height: auto;
+            padding: 55px 0 70px;
+        }
+
+        .hero h1 {
+            font-size: 46px;
+            letter-spacing: -2.5px;
+        }
+
+        .hero-description {
+            font-size: 15px;
+        }
+
+        .hero-right {
+            min-height: 320px;
+        }
+
+        .hero-orbit {
+            width: 280px;
+            height: 280px;
+        }
+
+        .hero-card {
+            width: 330px;
+        }
+
+        .parking-section,
+        .how-section {
+            padding: 70px 0;
+        }
+
+        .parking-toolbar {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .search-box {
+            max-width: none;
+        }
+
+        .map-wrapper,
+        #map {
+            min-height: 430px;
+            height: 430px;
+        }
+
+        .spots-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .booking-panel {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .book-button {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 430px) {
+        .auth-buttons .login-link {
+            display: none;
+        }
+
+        .logo {
+            font-size: 18px;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+        }
+
+        .hero-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .primary-button,
+        .secondary-button {
+            width: 100%;
+        }
+
+        .spots-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .confirmation-buttons {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+</head>
+
+<body data-authenticated="{% if user.is_authenticated %}true{% else %}false{% endif %}">
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+    <div class="header-container">
+
+
+    <a href="/" class="logo">
+        <span class="logo-icon">🚗</span>
+        <span>JOL Park</span>
+    </a>
+
+    <nav class="nav">
+        <a href="#parking">Парковки</a>
+        <a href="#how-it-works">Как это работает</a>
+    </nav>
+
+    <div class="auth-buttons">
+
+        {% if user.is_authenticated %}
+
+            <div class="user-info">
+                <span class="user-name">
+                    {{ user.username }}
+                </span>
+
+                <a href="{% url 'logout' %}" class="logout-link">
+                    Выйти
+                </a>
+            </div>
+
+        {% else %}
+
+            <a href="{% url 'login' %}" class="login-link">
+                Войти
+            </a>
+
+            <a href="{% url 'register' %}" class="register-link">
+                Создать аккаунт
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+</header>
+
+<main>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="hero-left">
+
+        <div class="hero-label">
+            SMART PARKING · BISHKEK
+        </div>
+
+        <h1>
+            Паркуйтесь
+            <span>без лишних проблем.</span>
+        </h1>
+
+        <p class="hero-description">
+            JOL Park помогает найти свободное место,
+            посмотреть парковки на карте и забронировать
+            место заранее — прямо с телефона или компьютера.
+        </p>
+
+        <div class="hero-actions">
+
+            <a href="#parking" class="primary-button">
+                Найти парковку&nbsp; →
+            </a>
+
+            <a href="#how-it-works" class="secondary-button">
+                Как это работает
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="hero-right">
+
+        <div class="hero-orbit"></div>
+
+        <div class="hero-card">
+
+            <div class="hero-card-top">
+
+                <div class="hero-card-icon">
+                    🅿️
+                </div>
+
+                <div class="live-badge">
+                    <span class="live-dot"></span>
+                    Система работает
+                </div>
+
+            </div>
+
+            <h2>
+                Умная парковка
+            </h2>
+
+            <p>
+                Смотрите актуальную информацию о парковках
+                Бишкека и выбирайте свободное место
+                всего за несколько секунд.
+            </p>
+
+            <div class="mini-stats">
+
+                <div class="mini-stat">
+                    <strong>24/7</strong>
+                    <span>Доступность</span>
+                </div>
+
+                <div class="mini-stat">
+                    <strong>LIVE</strong>
+                    <span>Статус мест</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= PARKING ================= -->
+
+<section class="parking-section" id="parking">
+
+    <div class="parking-container">
+
+        <div class="section-label">
+            PARKING NETWORK
+        </div>
+
+        <h2>
+            Найдите своё место
+        </h2>
+
+        <p class="section-description">
+            Выберите парковку на карте или из списка доступных мест.
+        </p>
+
+        <div class="parking-toolbar">
+
+            <div class="search-box">
+                <span>⌕</span>
+                <input
+                    type="text"
+                    id="parking-search"
+                    placeholder="Поиск парковки..."
+                >
+            </div>
+
+            <div class="status-chip">
+                <span class="live-dot"></span>
+                Актуальные данные
+            </div>
+
+        </div>
+
+
+        <div class="parking-layout">
+
+            <!-- MAP -->
+
+            <div class="map-wrapper">
+                <div id="map"></div>
+            </div>
+
+
+            <!-- PARKING LIST -->
+
+            <div id="parking-grid">
+
+                <div class="loading">
+                    Загружаем парковки...
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= HOW IT WORKS ================= -->
+
+<section class="how-section" id="how-it-works">
+
+    <div class="how-container">
+
+        <div class="section-label">
+            HOW IT WORKS
+        </div>
+
+        <h2>
+            Три шага до свободного места
+        </h2>
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="step-number">
+                    01 / НАЙТИ
+                </div>
+
+                <h3>
+                    Выберите парковку
+                </h3>
+
+                <p>
+                    Откройте карту и найдите удобную
+                    парковку рядом с нужным местом.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    02 / ВЫБРАТЬ
+                </div>
+
+                <h3>
+                    Выберите свободное место
+                </h3>
+
+                <p>
+                    Посмотрите доступные места
+                    и выберите подходящее именно вам.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    03 / ЗАБРОНИРОВАТЬ
+                </div>
+
+                <h3>
+                    Подтвердите бронь
+                </h3>
+
+                <p>
+                    Нажмите кнопку бронирования —
+                    и место будет закреплено за вами.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+<!-- ================= PARKING MODAL ================= -->
+
+<div id="parking-modal" class="modal-overlay hidden">
+
+
+<div class="modal-content">
+
+    <button
+        type="button"
+        class="modal-close"
+        id="modal-close"
+    >
+        ×
+    </button>
+
+    <div class="modal-header">
+
+        <div class="modal-icon">
+            🅿️
+        </div>
+
+        <div>
+
+            <h2 id="modal-title">
+                Парковка
+            </h2>
+
+            <p id="modal-address">
+                Адрес парковки
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="spots-info">
+
+        <span class="legend-item">
+            <span class="legend-dot free-dot"></span>
+            Свободно
+        </span>
+
+        <span class="legend-item">
+            <span class="legend-dot occupied-dot"></span>
+            Занято
+        </span>
+
+        <span
+            id="spots-count"
+            class="spots-count"
+        >
+            0 свободных
+        </span>
+
+    </div>
+
+        <div id="spots-container">
+        <div class="loading">
+            Загрузка парковочных мест...
+        </div>
+    </div>
+
+
+    <div id="spots-grid" class="spots-grid">
+
+        <div class="loading">
+            Загружаем места...
+        </div>
+
+    </div>
+
+
+    <div id="booking-panel" class="booking-panel hidden">
+
+        <div class="selected-place">
+
+            <span>
+                Выбранное место
+            </span>
+
+            <strong id="selected-spot">
+                —
+            </strong>
+
+        </div>
+
+        <button
+            type="button"
+            id="book-button"
+            class="book-button"
+        >
+            Забронировать
+        </button>
+
+    </div>
+
+</div>
+
+
+</div>
+
+<!-- ================= CONFIRMATION ================= -->
+
+<div id="confirmation-modal" class="modal-overlay hidden">
+
+
+<div class="confirmation">
+
+    <button
+        type="button"
+        class="modal-close"
+        id="confirmation-close"
+    >
+        ×
+    </button>
+
+    <div class="success-icon">
+        ?
+    </div>
+
+    <h2>
+        Подтвердить бронирование?
+    </h2>
+
+    <p>
+        Вы хотите забронировать место
+        <strong id="confirm-spot">—</strong>
+    </p>
+
+    <div class="confirmation-buttons">
+
+        <button
+            type="button"
+            id="cancel-booking"
+            class="cancel-button"
+        >
+            Отмена
+        </button>
+
+        <button
+            type="button"
+            id="confirm-booking"
+            class="confirm-button"
+        >
+            Подтвердить
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- ================= SUCCESS ================= -->
+
+<div id="success-modal" class="modal-overlay hidden">
+
+<div class="confirmation">
+
+    <div class="success-icon">
+        ✓
+    </div>
+
+    <h2>
+        Бронирование подтверждено!
+    </h2>
+
+    <p id="success-message">
+        Место успешно забронировано.
+    </p>
+
+    <button
+        type="button"
+        id="success-close"
+        class="confirm-button"
+    >
+        Отлично
+    </button>
+
+</div>
+
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+    <p>
+        © 2026 JOL Park · Умная парковка в Бишкеке
+    </p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="{% static 'js/app.js' %}"></script>
+
+</body>
+</html>

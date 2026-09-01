@@ -1,0 +1,1963 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>JOL Park — умная парковка в Бишкеке</title>
+
+<meta
+    name="description"
+    content="JOL Park — сервис поиска и бронирования парковочных мест в Бишкеке."
+>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            Arial,
+            sans-serif;
+
+        background: #06101d;
+        color: #ffffff;
+
+        overflow-x: hidden;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    button {
+        font-family: inherit;
+    }
+
+    /* =========================
+       BACKGROUND
+    ========================= */
+
+    .page-bg {
+        position: fixed;
+        inset: 0;
+
+        z-index: -2;
+
+        background:
+            radial-gradient(
+                circle at 10% 10%,
+                rgba(37, 99, 235, 0.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 90% 30%,
+                rgba(14, 165, 233, 0.12),
+                transparent 28%
+            ),
+            #06101d;
+    }
+
+    .glow {
+        position: absolute;
+
+        width: 450px;
+        height: 450px;
+
+        border-radius: 50%;
+
+        filter: blur(100px);
+
+        opacity: 0.12;
+    }
+
+    .glow-one {
+        background: #2563eb;
+
+        top: 100px;
+        left: -200px;
+    }
+
+    .glow-two {
+        background: #0ea5e9;
+
+        right: -200px;
+        top: 600px;
+    }
+
+    /* =========================
+       NAVBAR
+    ========================= */
+
+    .navbar {
+        width: 100%;
+
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        z-index: 100;
+
+        border-bottom:
+            1px solid rgba(255, 255, 255, 0.06);
+
+        background:
+            rgba(6, 16, 29, 0.78);
+
+        backdrop-filter: blur(18px);
+    }
+
+    .nav-container {
+        max-width: 1180px;
+
+        height: 72px;
+
+        margin: auto;
+
+        padding: 0 25px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+
+        gap: 11px;
+
+        font-weight: 800;
+        font-size: 20px;
+    }
+
+    .brand-icon {
+        width: 39px;
+        height: 39px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 11px;
+
+        font-size: 20px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #0ea5e9
+            );
+
+        box-shadow:
+            0 8px 25px rgba(37, 99, 235, 0.25);
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+
+        gap: 30px;
+
+        color: #9fb0c3;
+
+        font-size: 14px;
+    }
+
+    .nav-links a {
+        transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+        color: #ffffff;
+    }
+
+    .nav-actions {
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+    }
+
+    .nav-login {
+        color: #cbd5e1;
+
+        padding: 9px 15px;
+
+        border-radius: 10px;
+
+        transition: 0.2s;
+    }
+
+    .nav-login:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-register {
+        padding: 10px 17px;
+
+        border-radius: 10px;
+
+        background: #2563eb;
+
+        font-size: 14px;
+        font-weight: 700;
+
+        transition: 0.2s;
+    }
+
+    .nav-register:hover {
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 10px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+        min-height: 100vh;
+
+        max-width: 1180px;
+
+        margin: auto;
+
+        padding:
+            150px 25px
+            90px;
+
+        display: grid;
+
+        grid-template-columns:
+            1.05fr
+            0.95fr;
+
+        gap: 70px;
+
+        align-items: center;
+    }
+
+    .hero-content {
+        animation: heroShow 0.8s ease;
+    }
+
+    @keyframes heroShow {
+        from {
+            opacity: 0;
+            transform: translateY(25px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 8px;
+
+        padding: 8px 13px;
+
+        margin-bottom: 20px;
+
+        border-radius: 100px;
+
+        background:
+            rgba(37, 99, 235, 0.1);
+
+        border:
+            1px solid rgba(96, 165, 250, 0.18);
+
+        color: #93c5fd;
+
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .badge-dot {
+        width: 7px;
+        height: 7px;
+
+        border-radius: 50%;
+
+        background: #38bdf8;
+
+        box-shadow:
+            0 0 12px rgba(56, 189, 248, 0.8);
+    }
+
+    .hero h1 {
+        max-width: 720px;
+
+        font-size:
+            clamp(44px, 6vw, 76px);
+
+        line-height: 0.98;
+
+        letter-spacing: -3px;
+
+        font-weight: 850;
+    }
+
+    .gradient-text {
+        background:
+            linear-gradient(
+                100deg,
+                #60a5fa,
+                #38bdf8
+            );
+
+        -webkit-background-clip: text;
+        background-clip: text;
+
+        color: transparent;
+    }
+
+    .hero-description {
+        max-width: 570px;
+
+        margin-top: 25px;
+
+        color: #94a7ba;
+
+        font-size: 17px;
+
+        line-height: 1.7;
+    }
+
+    .hero-buttons {
+        display: flex;
+
+        align-items: center;
+
+        gap: 13px;
+
+        margin-top: 32px;
+    }
+
+    .primary-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        padding: 14px 21px;
+
+        border-radius: 12px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #0ea5e9
+            );
+
+        color: white;
+
+        font-size: 14px;
+        font-weight: 700;
+
+        box-shadow:
+            0 14px 30px rgba(37, 99, 235, 0.24);
+
+        transition: 0.25s;
+    }
+
+    .primary-button:hover {
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 18px 38px rgba(37, 99, 235, 0.35);
+    }
+
+    .secondary-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 14px 21px;
+
+        border-radius: 12px;
+
+        border:
+            1px solid rgba(255, 255, 255, 0.1);
+
+        background:
+            rgba(255, 255, 255, 0.04);
+
+        color: #dbe5ef;
+
+        font-size: 14px;
+        font-weight: 600;
+
+        transition: 0.25s;
+    }
+
+    .secondary-button:hover {
+        background:
+            rgba(255, 255, 255, 0.08);
+
+        transform: translateY(-2px);
+    }
+
+    /* =========================
+       HERO VISUAL
+    ========================= */
+
+    .hero-visual {
+        position: relative;
+
+        min-height: 450px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        animation: visualShow 1s ease 0.15s both;
+    }
+
+    @keyframes visualShow {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .map-card {
+        width: 100%;
+        max-width: 470px;
+
+        height: 390px;
+
+        position: relative;
+
+        overflow: hidden;
+
+        border-radius: 28px;
+
+        border:
+            1px solid rgba(255, 255, 255, 0.1);
+
+        background:
+            linear-gradient(
+                135deg,
+                #10243a,
+                #091625
+            );
+
+        box-shadow:
+            0 30px 80px rgba(0, 0, 0, 0.35);
+
+        transform:
+            perspective(1000px)
+            rotateY(-5deg)
+            rotateX(2deg);
+    }
+
+    .map-lines {
+        position: absolute;
+        inset: 0;
+
+        opacity: 0.7;
+
+        background-image:
+            linear-gradient(
+                25deg,
+                transparent 44%,
+                rgba(255, 255, 255, 0.05) 45%,
+                rgba(255, 255, 255, 0.05) 47%,
+                transparent 48%
+            ),
+            linear-gradient(
+                125deg,
+                transparent 42%,
+                rgba(255, 255, 255, 0.04) 43%,
+                rgba(255, 255, 255, 0.04) 45%,
+                transparent 46%
+            );
+    }
+
+    .road {
+        position: absolute;
+
+        width: 130%;
+
+        height: 42px;
+
+        background:
+            rgba(255, 255, 255, 0.055);
+
+        transform: rotate(-28deg);
+
+        left: -80px;
+        top: 180px;
+
+        border-top:
+            1px solid rgba(255, 255, 255, 0.07);
+
+        border-bottom:
+            1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .road-two {
+        transform: rotate(32deg);
+
+        top: 245px;
+        left: -40px;
+    }
+
+    .map-label {
+        position: absolute;
+
+        top: 25px;
+        left: 25px;
+
+        padding: 9px 13px;
+
+        border-radius: 10px;
+
+        background:
+            rgba(7, 17, 31, 0.82);
+
+        border:
+            1px solid rgba(255, 255, 255, 0.08);
+
+        backdrop-filter: blur(10px);
+
+        font-size: 12px;
+        color: #b9c7d5;
+    }
+
+    .map-label strong {
+        display: block;
+
+        color: #fff;
+
+        font-size: 15px;
+
+        margin-bottom: 2px;
+    }
+
+    .pin {
+        position: absolute;
+
+        width: 44px;
+        height: 44px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #0ea5e9
+            );
+
+        border:
+            4px solid rgba(255, 255, 255, 0.9);
+
+        box-shadow:
+            0 10px 25px rgba(37, 99, 235, 0.4);
+
+        font-size: 18px;
+
+        animation: pinFloat 3s ease-in-out infinite;
+    }
+
+    .pin-one {
+        left: 27%;
+        top: 36%;
+    }
+
+    .pin-two {
+        right: 23%;
+        top: 55%;
+
+        animation-delay: 0.7s;
+    }
+
+    .pin-three {
+        left: 48%;
+        bottom: 15%;
+
+        animation-delay: 1.3s;
+    }
+
+    @keyframes pinFloat {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-7px);
+        }
+    }
+
+    .available-card {
+        position: absolute;
+
+        right: 22px;
+        bottom: 22px;
+
+        width: 185px;
+
+        padding: 15px;
+
+        border-radius: 15px;
+
+        background:
+            rgba(7, 17, 31, 0.88);
+
+        border:
+            1px solid rgba(255, 255, 255, 0.09);
+
+        backdrop-filter: blur(14px);
+
+        box-shadow:
+            0 15px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    .available-top {
+        display: flex;
+        justify-content: space-between;
+
+        color: #8fa3b8;
+
+        font-size: 11px;
+    }
+
+    .available-number {
+        margin-top: 4px;
+
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+    .available-number span {
+        font-size: 12px;
+        color: #8fa3b8;
+        font-weight: 500;
+    }
+
+    .available-bar {
+        height: 5px;
+
+        margin-top: 10px;
+
+        border-radius: 10px;
+
+        background:
+            rgba(255, 255, 255, 0.08);
+
+        overflow: hidden;
+    }
+
+    .available-progress {
+        width: 72%;
+        height: 100%;
+
+        border-radius: 10px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #2563eb,
+                #38bdf8
+            );
+    }
+
+    /* =========================
+       SECTION
+    ========================= */
+
+    .section {
+        max-width: 1180px;
+
+        margin: auto;
+
+        padding:
+            95px 25px;
+    }
+
+    .section-header {
+        max-width: 650px;
+
+        margin-bottom: 45px;
+    }
+
+    .section-label {
+        color: #60a5fa;
+
+        font-size: 12px;
+
+        font-weight: 800;
+
+        text-transform: uppercase;
+
+        letter-spacing: 1.5px;
+
+        margin-bottom: 10px;
+    }
+
+    .section-title {
+        font-size:
+            clamp(30px, 4vw, 46px);
+
+        line-height: 1.1;
+
+        letter-spacing: -1.5px;
+
+        font-weight: 800;
+    }
+
+    .section-description {
+        margin-top: 14px;
+
+        color: #8fa3b8;
+
+        line-height: 1.7;
+
+        font-size: 15px;
+    }
+
+    /* =========================
+       PROBLEM
+    ========================= */
+
+    .problem-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 17px;
+    }
+
+    .problem-card {
+        padding: 25px;
+
+        min-height: 205px;
+
+        border-radius: 18px;
+
+        border:
+            1px solid rgba(255, 255, 255, 0.07);
+
+        background:
+            rgba(255, 255, 255, 0.035);
+
+        transition: 0.25s;
+    }
+
+    .problem-card:hover {
+        transform: translateY(-5px);
+
+        background:
+            rgba(255, 255, 255, 0.055);
+
+        border-color:
+            rgba(96, 165, 250, 0.18);
+    }
+
+    .card-icon {
+        width: 45px;
+        height: 45px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 13px;
+
+        background:
+            rgba(37, 99, 235, 0.1);
+
+        font-size: 21px;
+
+        margin-bottom: 20px;
+    }
+
+    .problem-card h3 {
+        font-size: 17px;
+
+        margin-bottom: 9px;
+    }
+
+    .problem-card p {
+        color: #8194a8;
+
+        line-height: 1.6;
+
+        font-size: 13px;
+    }
+
+    /* =========================
+       HOW IT WORKS
+    ========================= */
+
+    .steps {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 18px;
+
+        counter-reset: step;
+    }
+
+    .step {
+        position: relative;
+
+        padding: 28px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(255, 255, 255, 0.055),
+                rgba(255, 255, 255, 0.025)
+            );
+
+        border:
+            1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .step-number {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background:
+            rgba(37, 99, 235, 0.13);
+
+        border:
+            1px solid rgba(96, 165, 250, 0.16);
+
+        color: #60a5fa;
+
+        font-weight: 800;
+
+        margin-bottom: 22px;
+    }
+
+    .step h3 {
+        font-size: 18px;
+
+        margin-bottom: 9px;
+    }
+
+    .step p {
+        color: #8194a8;
+
+        font-size: 13px;
+
+        line-height: 1.65;
+    }
+
+    /* =========================
+       BENEFITS
+    ========================= */
+
+    .benefits {
+        display: grid;
+
+        grid-template-columns:
+            0.9fr
+            1.1fr;
+
+        gap: 70px;
+
+        align-items: center;
+    }
+
+    .benefits-list {
+        display: grid;
+
+        gap: 15px;
+    }
+
+    .benefit {
+        display: flex;
+
+        gap: 14px;
+
+        padding: 17px;
+
+        border-radius: 15px;
+
+        background:
+            rgba(255, 255, 255, 0.035);
+
+        border:
+            1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .check {
+        flex-shrink: 0;
+
+        width: 28px;
+        height: 28px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 9px;
+
+        background:
+            rgba(37, 99, 235, 0.13);
+
+        color: #60a5fa;
+
+        font-size: 13px;
+    }
+
+    .benefit h4 {
+        font-size: 14px;
+
+        margin-bottom: 3px;
+    }
+
+    .benefit p {
+        color: #8194a8;
+
+        font-size: 12px;
+
+        line-height: 1.5;
+    }
+
+    .benefit-visual {
+        min-height: 360px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 25px;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(37, 99, 235, 0.15),
+                transparent 55%
+            );
+    }
+
+    .phone {
+        width: 220px;
+        height: 390px;
+
+        padding: 10px;
+
+        border-radius: 30px;
+
+        background: #0e1d2d;
+
+        border:
+            1px solid rgba(255, 255, 255, 0.1);
+
+        box-shadow:
+            0 25px 70px rgba(0, 0, 0, 0.35);
+
+        transform:
+            rotate(-4deg);
+    }
+
+    .phone-screen {
+        width: 100%;
+        height: 100%;
+
+        border-radius: 22px;
+
+        overflow: hidden;
+
+        background:
+            linear-gradient(
+                150deg,
+                #132c45,
+                #071321
+            );
+
+        position: relative;
+    }
+
+    .phone-top {
+        height: 55px;
+
+        padding: 17px;
+
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .mini-map {
+        height: 190px;
+
+        position: relative;
+
+        background:
+            linear-gradient(
+                30deg,
+                transparent 40%,
+                rgba(255, 255, 255, 0.05) 41%,
+                rgba(255, 255, 255, 0.05) 44%,
+                transparent 45%
+            ),
+            linear-gradient(
+                140deg,
+                transparent 45%,
+                rgba(255, 255, 255, 0.04) 46%,
+                rgba(255, 255, 255, 0.04) 49%,
+                transparent 50%
+            );
+    }
+
+    .mini-pin {
+        position: absolute;
+
+        width: 22px;
+        height: 22px;
+
+        border-radius: 50%;
+
+        background: #2563eb;
+
+        border: 3px solid white;
+
+        box-shadow:
+            0 5px 15px rgba(37, 99, 235, 0.4);
+    }
+
+    .mini-pin.one {
+        left: 25%;
+        top: 35%;
+    }
+
+    .mini-pin.two {
+        right: 20%;
+        top: 55%;
+    }
+
+    .phone-bottom {
+        padding: 15px;
+    }
+
+    .phone-place {
+        font-size: 13px;
+
+        font-weight: 700;
+
+        margin-bottom: 5px;
+    }
+
+    .phone-free {
+        color: #7f93a8;
+
+        font-size: 10px;
+    }
+
+    .phone-button {
+        margin-top: 13px;
+
+        height: 34px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 9px;
+
+        background: #2563eb;
+
+        font-size: 11px;
+
+        font-weight: 700;
+    }
+
+    /* =========================
+       CTA
+    ========================= */
+
+    .cta {
+        max-width: 1130px;
+
+        margin:
+            35px auto 100px;
+
+        padding:
+            65px 35px;
+
+        text-align: center;
+
+        border-radius: 28px;
+
+        background:
+            radial-gradient(
+                circle at 50% 0%,
+                rgba(37, 99, 235, 0.2),
+                transparent 55%
+            ),
+            rgba(255, 255, 255, 0.035);
+
+        border:
+            1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .cta h2 {
+        font-size:
+            clamp(30px, 4vw, 45px);
+
+        letter-spacing: -1.5px;
+
+        margin-bottom: 13px;
+    }
+
+    .cta p {
+        max-width: 540px;
+
+        margin: auto;
+
+        color: #8fa3b8;
+
+        font-size: 14px;
+
+        line-height: 1.6;
+    }
+
+    .cta .primary-button {
+        margin-top: 25px;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+        border-top:
+            1px solid rgba(255, 255, 255, 0.06);
+
+        padding: 30px 25px;
+
+        color: #64788c;
+
+        font-size: 12px;
+    }
+
+    .footer-container {
+        max-width: 1180px;
+
+        margin: auto;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+    }
+
+    .footer-brand {
+        color: #cbd5e1;
+
+        font-weight: 700;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 900px) {
+
+        .nav-links {
+            display: none;
+        }
+
+        .hero {
+            grid-template-columns: 1fr;
+
+            gap: 40px;
+
+            padding-top: 125px;
+
+            text-align: center;
+        }
+
+        .hero-description {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            justify-content: center;
+        }
+
+        .hero-visual {
+            min-height: 400px;
+        }
+
+        .benefits {
+            grid-template-columns: 1fr;
+
+            gap: 35px;
+        }
+
+        .benefit-visual {
+            order: -1;
+        }
+    }
+
+    @media (max-width: 700px) {
+
+        .problem-grid,
+        .steps {
+            grid-template-columns: 1fr;
+        }
+
+        .section {
+            padding:
+                70px 20px;
+        }
+
+        .hero {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .hero h1 {
+            letter-spacing: -2px;
+        }
+
+        .map-card {
+            height: 350px;
+
+            transform: none;
+        }
+
+        .cta {
+            margin-left: 15px;
+            margin-right: 15px;
+
+            padding:
+                50px 22px;
+        }
+
+        .footer-container {
+            flex-direction: column;
+
+            gap: 10px;
+
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        .nav-container {
+            padding: 0 15px;
+        }
+
+        .brand {
+            font-size: 18px;
+        }
+
+        .nav-login {
+            display: none;
+        }
+
+        .nav-register {
+            padding:
+                9px 13px;
+        }
+
+        .hero {
+            padding-top: 115px;
+        }
+
+        .hero h1 {
+            font-size: 43px;
+        }
+
+        .hero-description {
+            font-size: 15px;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+
+            width: 100%;
+        }
+
+        .primary-button,
+        .secondary-button {
+            width: 100%;
+        }
+
+        .hero-visual {
+            min-height: 350px;
+        }
+
+        .map-card {
+            height: 320px;
+        }
+
+        .available-card {
+            right: 15px;
+            bottom: 15px;
+        }
+
+        .pin-one {
+            left: 20%;
+        }
+
+        .pin-two {
+            right: 18%;
+        }
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<div class="page-bg">
+    <div class="glow glow-one"></div>
+    <div class="glow glow-two"></div>
+</div>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<header class="navbar">
+
+
+<div class="nav-container">
+
+    <a href="{% url 'landing' %}" class="brand">
+
+        <div class="brand-icon">
+            🚗
+        </div>
+
+        <span>JOL Park</span>
+
+    </a>
+
+
+    <nav class="nav-links">
+
+        <a href="#problem">
+            Проблема
+        </a>
+
+        <a href="#how">
+            Как работает
+        </a>
+
+        <a href="#benefits">
+            Возможности
+        </a>
+
+    </nav>
+
+
+    <div class="nav-actions">
+
+        <a
+            href="{% url 'login' %}"
+            class="nav-login"
+        >
+            Войти
+        </a>
+
+        <a
+            href="{% url 'register' %}"
+            class="nav-register"
+        >
+            Регистрация
+        </a>
+
+    </div>
+
+</div>
+
+
+</header>
+
+<!-- =========================
+     HERO
+========================= -->
+
+<main>
+
+<section class="hero">
+
+
+<div class="hero-content">
+
+    <div class="badge">
+
+        <span class="badge-dot"></span>
+
+        Умная парковка в Бишкеке
+
+    </div>
+
+
+    <h1>
+
+        Парковка,
+        <span class="gradient-text">
+            без лишнего поиска.
+        </span>
+
+    </h1>
+
+
+    <p class="hero-description">
+
+        JOL Park помогает найти подходящую парковку,
+        посмотреть свободные места и забронировать место
+        заранее — прямо с телефона.
+
+    </p>
+
+
+    <div class="hero-buttons">
+
+        <a
+            href="{% url 'home' %}"
+            class="primary-button"
+        >
+            🚗 Открыть JOL Park
+        </a>
+
+        <a
+            href="#how"
+            class="secondary-button"
+        >
+            Как это работает
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- VISUAL -->
+
+<div class="hero-visual">
+
+    <div class="map-card">
+
+        <div class="map-lines"></div>
+
+        <div class="road"></div>
+        <div class="road road-two"></div>
+
+
+        <div class="map-label">
+
+            <strong>Бишкек</strong>
+
+            Поиск парковки
+
+        </div>
+
+
+        <div class="pin pin-one">
+            P
+        </div>
+
+        <div class="pin pin-two">
+            P
+        </div>
+
+        <div class="pin pin-three">
+            P
+        </div>
+
+
+        <div class="available-card">
+
+            <div class="available-top">
+
+                <span>
+                    Свободные места
+                </span>
+
+                <span>
+                    ● сейчас
+                </span>
+
+            </div>
+
+            <div class="available-number">
+
+                18
+
+                <span>
+                    мест
+                </span>
+
+            </div>
+
+            <div class="available-bar">
+
+                <div class="available-progress"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- =========================
+     PROBLEM
+========================= -->
+
+<section
+    class="section"
+    id="problem"
+>
+
+
+<div class="section-header">
+
+    <div class="section-label">
+        Проблема
+    </div>
+
+    <h2 class="section-title">
+        Найти парковку иногда сложнее,
+        чем доехать до места.
+    </h2>
+
+    <p class="section-description">
+
+        JOL Park создан вокруг простой проблемы:
+        водитель хочет заранее понимать, где сможет
+        оставить автомобиль.
+
+    </p>
+
+</div>
+
+
+<div class="problem-grid">
+
+    <div class="problem-card">
+
+        <div class="card-icon">
+            🔎
+        </div>
+
+        <h3>
+            Долгий поиск
+        </h3>
+
+        <p>
+            Водителю приходится ездить по улицам
+            и искать свободное место уже после приезда.
+        </p>
+
+    </div>
+
+
+    <div class="problem-card">
+
+        <div class="card-icon">
+            🗺️
+        </div>
+
+        <h3>
+            Нет единой картины
+        </h3>
+
+        <p>
+            Информация о разных парковках может быть
+            разбросана по разным местам.
+        </p>
+
+    </div>
+
+
+    <div class="problem-card">
+
+        <div class="card-icon">
+            ⏱️
+        </div>
+
+        <h3>
+            Теряется время
+        </h3>
+
+        <p>
+            Чем дольше водитель ищет место,
+            тем больше времени уходит на обычную поездку.
+        </p>
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- =========================
+     HOW IT WORKS
+========================= -->
+
+<section
+    class="section"
+    id="how"
+>
+
+
+<div class="section-header">
+
+    <div class="section-label">
+        Как работает
+    </div>
+
+    <h2 class="section-title">
+        Три шага до парковочного места.
+    </h2>
+
+    <p class="section-description">
+
+        Мы старались сделать сценарий максимально
+        простым и понятным.
+
+    </p>
+
+</div>
+
+
+<div class="steps">
+
+    <div class="step">
+
+        <div class="step-number">
+            01
+        </div>
+
+        <h3>
+            Открой карту
+        </h3>
+
+        <p>
+            Найди нужную парковку на карте
+            и посмотри доступные места.
+        </p>
+
+    </div>
+
+
+    <div class="step">
+
+        <div class="step-number">
+            02
+        </div>
+
+        <h3>
+            Выбери место
+        </h3>
+
+        <p>
+            Посмотри парковочные места
+            и выбери подходящее.
+        </p>
+
+    </div>
+
+
+    <div class="step">
+
+        <div class="step-number">
+            03
+        </div>
+
+        <h3>
+            Забронируй
+        </h3>
+
+        <p>
+            Нажми кнопку бронирования
+            и закрепи место за собой.
+        </p>
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- =========================
+     BENEFITS
+========================= -->
+
+<section
+    class="section"
+    id="benefits"
+>
+
+
+<div class="benefits">
+
+    <div>
+
+        <div class="section-label">
+            JOL Park
+        </div>
+
+        <h2 class="section-title">
+            Всё необходимое
+            в одном месте.
+        </h2>
+
+        <p class="section-description">
+
+            MVP JOL Park объединяет карту,
+            парковочные локации и бронирование
+            в одном простом интерфейсе.
+
+        </p>
+
+
+        <div class="benefits-list">
+
+            <div class="benefit">
+
+                <div class="check">
+                    ✓
+                </div>
+
+                <div>
+
+                    <h4>
+                        Интерактивная карта
+                    </h4>
+
+                    <p>
+                        Парковки отображаются прямо на карте города.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="benefit">
+
+                <div class="check">
+                    ✓
+                </div>
+
+                <div>
+
+                    <h4>
+                        Свободные места
+                    </h4>
+
+                    <p>
+                        Можно посмотреть доступность парковочных мест.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="benefit">
+
+                <div class="check">
+                    ✓
+                </div>
+
+                <div>
+
+                    <h4>
+                        Бронирование
+                    </h4>
+
+                    <p>
+                        Выбранное место можно забронировать через приложение.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="benefit">
+
+                <div class="check">
+                    ✓
+                </div>
+
+                <div>
+
+                    <h4>
+                        Работает с телефона
+                    </h4>
+
+                    <p>
+                        Никакой установки — сервис открывается в браузере.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PHONE -->
+
+    <div class="benefit-visual">
+
+        <div class="phone">
+
+            <div class="phone-screen">
+
+                <div class="phone-top">
+                    JOL Park
+                </div>
+
+
+                <div class="mini-map">
+
+                    <div class="mini-pin one"></div>
+
+                    <div class="mini-pin two"></div>
+
+                </div>
+
+
+                <div class="phone-bottom">
+
+                    <div class="phone-place">
+                        Bishkek Park
+                    </div>
+
+                    <div class="phone-free">
+                        Свободно мест: 3
+                    </div>
+
+                    <div class="phone-button">
+                        Выбрать место
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- =========================
+     CTA
+========================= -->
+
+<section class="cta">
+
+
+<h2>
+    Попробуй JOL Park
+</h2>
+
+<p>
+    Открой карту, найди парковку
+    и попробуй забронировать место.
+</p>
+
+<a
+    href="{% url 'home' %}"
+    class="primary-button"
+>
+    🚗 Перейти в приложение
+</a>
+
+
+</section>
+
+</main>
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+
+<div class="footer-container">
+
+    <div class="footer-brand">
+        🚗 JOL Park
+    </div>
+
+    <div>
+        MVP-проект • Бишкек • 2026
+    </div>
+
+</div>
+
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,954 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Вход — JOL Park</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 15% 20%,
+                    rgba(37, 99, 235, 0.25),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 85% 80%,
+                    rgba(59, 130, 246, 0.18),
+                    transparent 30%
+                ),
+                #070d1a;
+
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* BACKGROUND */
+
+        .background {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(2px);
+            opacity: 0.55;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .orb-one {
+            width: 280px;
+            height: 280px;
+            background: rgba(37, 99, 235, 0.18);
+            top: -100px;
+            left: -80px;
+        }
+
+        .orb-two {
+            width: 220px;
+            height: 220px;
+            background: rgba(96, 165, 250, 0.13);
+            right: -60px;
+            top: 20%;
+            animation-delay: 2s;
+        }
+
+        .orb-three {
+            width: 300px;
+            height: 300px;
+            background: rgba(37, 99, 235, 0.12);
+            bottom: -150px;
+            left: 30%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(25px, -25px) scale(1.08);
+            }
+        }
+
+        /* GRID */
+
+        .grid {
+            position: absolute;
+            inset: 0;
+
+            background-image:
+                linear-gradient(
+                    rgba(255, 255, 255, 0.025) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.025) 1px,
+                    transparent 1px
+                );
+
+            background-size: 55px 55px;
+
+            mask-image:
+                linear-gradient(
+                    to bottom,
+                    black,
+                    transparent 90%
+                );
+        }
+
+        /* PAGE */
+
+        .page {
+            position: relative;
+            z-index: 2;
+
+            min-height: 100vh;
+
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            align-items: center;
+
+            max-width: 1180px;
+            margin: 0 auto;
+
+            padding: 40px;
+            gap: 80px;
+        }
+
+        /* LEFT */
+
+        .presentation {
+            animation: slideLeft 0.8s ease forwards;
+        }
+
+        @keyframes slideLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            color: white;
+            text-decoration: none;
+
+            font-size: 26px;
+            font-weight: 800;
+
+            margin-bottom: 70px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #60a5fa
+            );
+
+            box-shadow:
+                0 10px 30px rgba(37, 99, 235, 0.35);
+
+            font-size: 25px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            color: #60a5fa;
+
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+
+            margin-bottom: 20px;
+        }
+
+        .eyebrow::before {
+            content: "";
+
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 0 5px rgba(34, 197, 94, 0.1);
+
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow:
+                    0 0 0 0 rgba(34, 197, 94, 0.4);
+            }
+
+            70% {
+                box-shadow:
+                    0 0 0 8px rgba(34, 197, 94, 0);
+            }
+
+            100% {
+                box-shadow:
+                    0 0 0 0 rgba(34, 197, 94, 0);
+            }
+        }
+
+        .presentation h1 {
+            max-width: 550px;
+
+            font-size: clamp(46px, 5vw, 72px);
+            line-height: 0.98;
+
+            letter-spacing: -3px;
+
+            margin-bottom: 25px;
+        }
+
+        .presentation h1 span {
+            color: #3b82f6;
+        }
+
+        .description {
+            max-width: 480px;
+
+            color: #94a3b8;
+
+            font-size: 18px;
+            line-height: 1.7;
+
+            margin-bottom: 40px;
+        }
+
+        /* FEATURES */
+
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            color: #cbd5e1;
+
+            font-size: 15px;
+
+            animation: appear 0.7s ease forwards;
+            opacity: 0;
+        }
+
+        .feature:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .feature:nth-child(2) {
+            animation-delay: 0.35s;
+        }
+
+        .feature:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-icon {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: rgba(37, 99, 235, 0.12);
+
+            border: 1px solid rgba(96, 165, 250, 0.12);
+
+            font-size: 17px;
+        }
+
+        /* LOGIN CARD */
+
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+
+            animation: slideRight 0.8s ease forwards;
+        }
+
+        @keyframes slideRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 450px;
+
+            padding: 42px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255, 255, 255, 0.09),
+                    rgba(255, 255, 255, 0.045)
+                );
+
+            border: 1px solid rgba(255, 255, 255, 0.1);
+
+            border-radius: 28px;
+
+            backdrop-filter: blur(25px);
+
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.4);
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+            height: 180px;
+
+            top: -100px;
+            right: -80px;
+
+            background: rgba(59, 130, 246, 0.25);
+
+            border-radius: 50%;
+
+            filter: blur(20px);
+        }
+
+        .card-top {
+            position: relative;
+            z-index: 1;
+
+            margin-bottom: 32px;
+        }
+
+        .card-top h2 {
+            font-size: 32px;
+            letter-spacing: -1px;
+
+            margin-bottom: 8px;
+        }
+
+        .card-top p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        /* ERROR */
+
+        .error-message {
+            position: relative;
+            z-index: 1;
+
+            padding: 13px 15px;
+
+            margin-bottom: 20px;
+
+            border-radius: 12px;
+
+            background: rgba(239, 68, 68, 0.1);
+
+            border: 1px solid rgba(239, 68, 68, 0.25);
+
+            color: #fca5a5;
+
+            font-size: 14px;
+        }
+
+        /* FORM */
+
+        form {
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #cbd5e1;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+
+            left: 16px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            font-size: 17px;
+
+            opacity: 0.65;
+
+            pointer-events: none;
+        }
+
+        .form-group input {
+            width: 100%;
+
+            height: 54px;
+
+            padding: 0 16px 0 46px;
+
+            border: 1px solid rgba(255, 255, 255, 0.1);
+
+            border-radius: 13px;
+
+            outline: none;
+
+            background: rgba(15, 23, 42, 0.65);
+
+            color: white;
+
+            font-size: 15px;
+
+            transition:
+                border-color 0.25s ease,
+                box-shadow 0.25s ease,
+                background 0.25s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #64748b;
+        }
+
+        .form-group input:focus {
+            border-color: #3b82f6;
+
+            background: rgba(15, 23, 42, 0.9);
+
+            box-shadow:
+                0 0 0 4px rgba(59, 130, 246, 0.12);
+        }
+
+        /* BUTTON */
+
+        .login-button {
+            width: 100%;
+
+            height: 56px;
+
+            margin-top: 8px;
+
+            border: none;
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #3b82f6
+                );
+
+            color: white;
+
+            font-size: 16px;
+            font-weight: 800;
+
+            box-shadow:
+                0 12px 30px rgba(37, 99, 235, 0.28);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                filter 0.2s ease;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-button::after {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -100%;
+
+            width: 60%;
+            height: 100%;
+
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.25),
+                transparent
+            );
+
+            transform: skewX(-20deg);
+
+            transition: left 0.6s ease;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 16px 35px rgba(37, 99, 235, 0.4);
+
+            filter: brightness(1.08);
+        }
+
+        .login-button:hover::after {
+            left: 140%;
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        /* REGISTER */
+
+        .register {
+            position: relative;
+            z-index: 1;
+
+            text-align: center;
+
+            margin-top: 25px;
+
+            color: #64748b;
+
+            font-size: 14px;
+        }
+
+        .register a {
+            color: #60a5fa;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+            transition: color 0.2s ease;
+        }
+
+        .register a:hover {
+            color: #93c5fd;
+        }
+
+        /* BACK */
+
+        .back-home {
+            display: block;
+
+            position: relative;
+            z-index: 1;
+
+            text-align: center;
+
+            margin-top: 22px;
+
+            color: #64748b;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            transition: color 0.2s ease;
+        }
+
+        .back-home:hover {
+            color: #cbd5e1;
+        }
+
+        /* CAR DECORATION */
+
+        .car-decoration {
+            position: absolute;
+
+            right: 8%;
+            bottom: 8%;
+
+            font-size: 80px;
+
+            opacity: 0.035;
+
+            transform: rotate(-5deg);
+
+            animation: carFloat 5s ease-in-out infinite;
+        }
+
+        @keyframes carFloat {
+            0%,
+            100% {
+                transform:
+                    translateX(0)
+                    rotate(-5deg);
+            }
+
+            50% {
+                transform:
+                    translateX(25px)
+                    rotate(-5deg);
+            }
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+
+            .page {
+                grid-template-columns: 1fr;
+
+                max-width: 600px;
+
+                gap: 35px;
+
+                padding: 30px 22px;
+            }
+
+            .presentation {
+                text-align: center;
+            }
+
+            .logo {
+                margin-bottom: 40px;
+            }
+
+            .presentation h1 {
+                margin-left: auto;
+                margin-right: auto;
+
+                font-size: 48px;
+            }
+
+            .description {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .features {
+                align-items: center;
+            }
+
+            .login-card {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .page {
+                padding: 25px 16px;
+            }
+
+            .presentation h1 {
+                font-size: 40px;
+                letter-spacing: -2px;
+            }
+
+            .description {
+                font-size: 16px;
+            }
+
+            .login-card {
+                padding: 28px 22px;
+                border-radius: 22px;
+            }
+
+            .card-top h2 {
+                font-size: 27px;
+            }
+
+            .features {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="background">
+    <div class="grid"></div>
+
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+    <div class="orb orb-three"></div>
+</div>
+
+
+<div class="page">
+
+    <!-- LEFT -->
+
+    <section class="presentation">
+
+        <a
+            href="{% url 'home' %}"
+            class="logo"
+        >
+            <span class="logo-icon">🚗</span>
+            <span>JOL Park</span>
+        </a>
+
+        <div class="eyebrow">
+            SMART PARKING IN BISHKEK
+        </div>
+
+        <h1>
+            Парковка
+            <span>без лишних проблем.</span>
+        </h1>
+
+        <p class="description">
+            Войдите в JOL Park, чтобы найти свободное
+            парковочное место и забронировать его
+            за несколько секунд.
+        </p>
+
+        <div class="features">
+
+            <div class="feature">
+                <div class="feature-icon">
+                    📍
+                </div>
+
+                <span>
+                    Находите парковки на интерактивной карте
+                </span>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">
+                    🅿️
+                </div>
+
+                <span>
+                    Выбирайте конкретное свободное место
+                </span>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">
+                    ⚡
+                </div>
+
+                <span>
+                    Бронируйте быстро и удобно
+                </span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- LOGIN -->
+
+    <section class="login-wrapper">
+
+        <div class="login-card">
+
+            <div class="card-top">
+
+                <h2>
+                    С возвращением 👋
+                </h2>
+
+                <p>
+                    Войдите в свой аккаунт JOL Park
+                </p>
+
+            </div>
+
+
+            {% if error %}
+
+                <div class="error-message">
+                    ⚠️ {{ error }}
+                </div>
+
+            {% endif %}
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Логин
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            👤
+                        </span>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Введите логин"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Пароль
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Введите пароль"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="login-button"
+                >
+                    Войти в JOL Park
+                </button>
+
+            </form>
+
+
+            <div class="register">
+                Нет аккаунта?
+                <a href="{% url 'register' %}">
+                    Зарегистрироваться
+                </a>
+            </div>
+
+
+            <a
+                href="{% url 'home' %}"
+                class="back-home"
+            >
+                ← Вернуться на главную
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<div class="car-decoration">
+    🚗
+</div>
+
+</body>
+</html>
