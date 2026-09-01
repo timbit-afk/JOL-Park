@@ -1,1899 +1,1273 @@
 {% load static %}
 
 <!DOCTYPE html>
-
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-<title>JOL Park — умная парковка в Бишкеке</title>
-
-<meta
-    name="description"
-    content="JOL Park — сервис поиска и бронирования парковочных мест в Бишкеке."
->
-
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    html {
-        scroll-behavior: smooth;
-    }
-
-    body {
-        font-family:
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            Roboto,
-            Arial,
-            sans-serif;
-
-        background: #06101d;
-        color: #ffffff;
-
-        overflow-x: hidden;
-    }
-
-    a {
-        color: inherit;
-        text-decoration: none;
-    }
-
-    button {
-        font-family: inherit;
-    }
-
-    /* =========================
-       BACKGROUND
-    ========================= */
-
-    .page-bg {
-        position: fixed;
-        inset: 0;
-
-        z-index: -2;
-
-        background:
-            radial-gradient(
-                circle at 10% 10%,
-                rgba(37, 99, 235, 0.18),
-                transparent 30%
-            ),
-            radial-gradient(
-                circle at 90% 30%,
-                rgba(14, 165, 233, 0.12),
-                transparent 28%
-            ),
-            #06101d;
-    }
-
-    .glow {
-        position: absolute;
-
-        width: 450px;
-        height: 450px;
-
-        border-radius: 50%;
-
-        filter: blur(100px);
-
-        opacity: 0.12;
-    }
-
-    .glow-one {
-        background: #2563eb;
-
-        top: 100px;
-        left: -200px;
-    }
-
-    .glow-two {
-        background: #0ea5e9;
-
-        right: -200px;
-        top: 600px;
-    }
-
-    /* =========================
-       NAVBAR
-    ========================= */
-
-    .navbar {
-        width: 100%;
-
-        position: fixed;
-        top: 0;
-        left: 0;
-
-        z-index: 100;
-
-        border-bottom:
-            1px solid rgba(255, 255, 255, 0.06);
-
-        background:
-            rgba(6, 16, 29, 0.78);
-
-        backdrop-filter: blur(18px);
-    }
-
-    .nav-container {
-        max-width: 1180px;
-
-        height: 72px;
-
-        margin: auto;
-
-        padding: 0 25px;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .brand {
-        display: flex;
-        align-items: center;
-
-        gap: 11px;
-
-        font-weight: 800;
-        font-size: 20px;
-    }
-
-    .brand-icon {
-        width: 39px;
-        height: 39px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 11px;
-
-        font-size: 20px;
-
-        background:
-            linear-gradient(
-                135deg,
-                #2563eb,
-                #0ea5e9
-            );
-
-        box-shadow:
-            0 8px 25px rgba(37, 99, 235, 0.25);
-    }
-
-    .nav-links {
-        display: flex;
-        align-items: center;
-
-        gap: 30px;
-
-        color: #9fb0c3;
-
-        font-size: 14px;
-    }
-
-    .nav-links a {
-        transition: 0.2s;
-    }
-
-    .nav-links a:hover {
-        color: #ffffff;
-    }
-
-    .nav-actions {
-        display: flex;
-        align-items: center;
-
-        gap: 10px;
-    }
-
-    .nav-login {
-        color: #cbd5e1;
-
-        padding: 9px 15px;
-
-        border-radius: 10px;
-
-        transition: 0.2s;
-    }
-
-    .nav-login:hover {
-        background: rgba(255, 255, 255, 0.06);
-    }
-
-    .nav-register {
-        padding: 10px 17px;
-
-        border-radius: 10px;
-
-        background: #2563eb;
-
-        font-size: 14px;
-        font-weight: 700;
-
-        transition: 0.2s;
-    }
-
-    .nav-register:hover {
-        transform: translateY(-2px);
-
-        box-shadow:
-            0 10px 25px rgba(37, 99, 235, 0.3);
-    }
-
-    /* =========================
-       HERO
-    ========================= */
-
-    .hero {
-        min-height: 100vh;
-
-        max-width: 1180px;
-
-        margin: auto;
-
-        padding:
-            150px 25px
-            90px;
-
-        display: grid;
-
-        grid-template-columns:
-            1.05fr
-            0.95fr;
-
-        gap: 70px;
-
-        align-items: center;
-    }
-
-    .hero-content {
-        animation: heroShow 0.8s ease;
-    }
-
-    @keyframes heroShow {
-        from {
-            opacity: 0;
-            transform: translateY(25px);
+    <title>JOL Park — умная парковка в Бишкеке</title>
+
+    <meta
+        name="description"
+        content="JOL Park помогает найти свободное парковочное место и забронировать его заранее."
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .badge {
-        display: inline-flex;
-        align-items: center;
-
-        gap: 8px;
-
-        padding: 8px 13px;
-
-        margin-bottom: 20px;
-
-        border-radius: 100px;
-
-        background:
-            rgba(37, 99, 235, 0.1);
-
-        border:
-            1px solid rgba(96, 165, 250, 0.18);
-
-        color: #93c5fd;
-
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .badge-dot {
-        width: 7px;
-        height: 7px;
-
-        border-radius: 50%;
-
-        background: #38bdf8;
-
-        box-shadow:
-            0 0 12px rgba(56, 189, 248, 0.8);
-    }
-
-    .hero h1 {
-        max-width: 720px;
-
-        font-size:
-            clamp(44px, 6vw, 76px);
-
-        line-height: 0.98;
-
-        letter-spacing: -3px;
-
-        font-weight: 850;
-    }
-
-    .gradient-text {
-        background:
-            linear-gradient(
-                100deg,
-                #60a5fa,
-                #38bdf8
-            );
-
-        -webkit-background-clip: text;
-        background-clip: text;
-
-        color: transparent;
-    }
-
-    .hero-description {
-        max-width: 570px;
-
-        margin-top: 25px;
-
-        color: #94a7ba;
-
-        font-size: 17px;
-
-        line-height: 1.7;
-    }
-
-    .hero-buttons {
-        display: flex;
-
-        align-items: center;
-
-        gap: 13px;
-
-        margin-top: 32px;
-    }
-
-    .primary-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-
-        gap: 8px;
-
-        padding: 14px 21px;
-
-        border-radius: 12px;
-
-        background:
-            linear-gradient(
-                135deg,
-                #2563eb,
-                #0ea5e9
-            );
-
-        color: white;
-
-        font-size: 14px;
-        font-weight: 700;
-
-        box-shadow:
-            0 14px 30px rgba(37, 99, 235, 0.24);
-
-        transition: 0.25s;
-    }
-
-    .primary-button:hover {
-        transform: translateY(-3px);
-
-        box-shadow:
-            0 18px 38px rgba(37, 99, 235, 0.35);
-    }
-
-    .secondary-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-
-        padding: 14px 21px;
-
-        border-radius: 12px;
-
-        border:
-            1px solid rgba(255, 255, 255, 0.1);
-
-        background:
-            rgba(255, 255, 255, 0.04);
-
-        color: #dbe5ef;
-
-        font-size: 14px;
-        font-weight: 600;
-
-        transition: 0.25s;
-    }
-
-    .secondary-button:hover {
-        background:
-            rgba(255, 255, 255, 0.08);
-
-        transform: translateY(-2px);
-    }
-
-    /* =========================
-       HERO VISUAL
-    ========================= */
-
-    .hero-visual {
-        position: relative;
-
-        min-height: 450px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        animation: visualShow 1s ease 0.15s both;
-    }
-
-    @keyframes visualShow {
-        from {
-            opacity: 0;
-            transform: scale(0.95);
+        html {
+            scroll-behavior: smooth;
         }
 
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
+        body {
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
 
-    .map-card {
-        width: 100%;
-        max-width: 470px;
-
-        height: 390px;
-
-        position: relative;
-
-        overflow: hidden;
-
-        border-radius: 28px;
-
-        border:
-            1px solid rgba(255, 255, 255, 0.1);
-
-        background:
-            linear-gradient(
-                135deg,
-                #10243a,
-                #091625
-            );
-
-        box-shadow:
-            0 30px 80px rgba(0, 0, 0, 0.35);
-
-        transform:
-            perspective(1000px)
-            rotateY(-5deg)
-            rotateX(2deg);
-    }
-
-    .map-lines {
-        position: absolute;
-        inset: 0;
-
-        opacity: 0.7;
-
-        background-image:
-            linear-gradient(
-                25deg,
-                transparent 44%,
-                rgba(255, 255, 255, 0.05) 45%,
-                rgba(255, 255, 255, 0.05) 47%,
-                transparent 48%
-            ),
-            linear-gradient(
-                125deg,
-                transparent 42%,
-                rgba(255, 255, 255, 0.04) 43%,
-                rgba(255, 255, 255, 0.04) 45%,
-                transparent 46%
-            );
-    }
-
-    .road {
-        position: absolute;
-
-        width: 130%;
-
-        height: 42px;
-
-        background:
-            rgba(255, 255, 255, 0.055);
-
-        transform: rotate(-28deg);
-
-        left: -80px;
-        top: 180px;
-
-        border-top:
-            1px solid rgba(255, 255, 255, 0.07);
-
-        border-bottom:
-            1px solid rgba(255, 255, 255, 0.07);
-    }
-
-    .road-two {
-        transform: rotate(32deg);
-
-        top: 245px;
-        left: -40px;
-    }
-
-    .map-label {
-        position: absolute;
-
-        top: 25px;
-        left: 25px;
-
-        padding: 9px 13px;
-
-        border-radius: 10px;
-
-        background:
-            rgba(7, 17, 31, 0.82);
-
-        border:
-            1px solid rgba(255, 255, 255, 0.08);
-
-        backdrop-filter: blur(10px);
-
-        font-size: 12px;
-        color: #b9c7d5;
-    }
-
-    .map-label strong {
-        display: block;
-
-        color: #fff;
-
-        font-size: 15px;
-
-        margin-bottom: 2px;
-    }
-
-    .pin {
-        position: absolute;
-
-        width: 44px;
-        height: 44px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 50%;
-
-        background:
-            linear-gradient(
-                135deg,
-                #2563eb,
-                #0ea5e9
-            );
-
-        border:
-            4px solid rgba(255, 255, 255, 0.9);
-
-        box-shadow:
-            0 10px 25px rgba(37, 99, 235, 0.4);
-
-        font-size: 18px;
-
-        animation: pinFloat 3s ease-in-out infinite;
-    }
-
-    .pin-one {
-        left: 27%;
-        top: 36%;
-    }
-
-    .pin-two {
-        right: 23%;
-        top: 55%;
-
-        animation-delay: 0.7s;
-    }
-
-    .pin-three {
-        left: 48%;
-        bottom: 15%;
-
-        animation-delay: 1.3s;
-    }
-
-    @keyframes pinFloat {
-        0%, 100% {
-            transform: translateY(0);
+            background: #f7f8fa;
+            color: #111827;
+            overflow-x: hidden;
         }
 
-        50% {
-            transform: translateY(-7px);
+        a {
+            color: inherit;
+            text-decoration: none;
         }
-    }
 
-    .available-card {
-        position: absolute;
+        button {
+            font: inherit;
+        }
 
-        right: 22px;
-        bottom: 22px;
+        /* ================= HEADER ================= */
 
-        width: 185px;
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
 
-        padding: 15px;
+            z-index: 1000;
 
-        border-radius: 15px;
+            height: 76px;
 
-        background:
-            rgba(7, 17, 31, 0.88);
+            display: flex;
+            align-items: center;
 
-        border:
-            1px solid rgba(255, 255, 255, 0.09);
+            background: rgba(255, 255, 255, .86);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
 
-        backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(17, 24, 39, .06);
+        }
 
-        box-shadow:
-            0 15px 35px rgba(0, 0, 0, 0.25);
-    }
+        .nav {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
 
-    .available-top {
-        display: flex;
-        justify-content: space-between;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-        color: #8fa3b8;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
 
-        font-size: 11px;
-    }
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -.8px;
+        }
 
-    .available-number {
-        margin-top: 4px;
+        .logo-mark {
+            width: 40px;
+            height: 40px;
 
-        font-size: 25px;
-        font-weight: 800;
-    }
+            display: grid;
+            place-items: center;
 
-    .available-number span {
-        font-size: 12px;
-        color: #8fa3b8;
-        font-weight: 500;
-    }
+            border-radius: 12px;
 
-    .available-bar {
-        height: 5px;
+            background: #111827;
+            color: white;
 
-        margin-top: 10px;
+            font-size: 18px;
 
-        border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(17, 24, 39, .18);
+        }
 
-        background:
-            rgba(255, 255, 255, 0.08);
-
-        overflow: hidden;
-    }
-
-    .available-progress {
-        width: 72%;
-        height: 100%;
-
-        border-radius: 10px;
-
-        background:
-            linear-gradient(
-                90deg,
-                #2563eb,
-                #38bdf8
-            );
-    }
-
-    /* =========================
-       SECTION
-    ========================= */
-
-    .section {
-        max-width: 1180px;
-
-        margin: auto;
-
-        padding:
-            95px 25px;
-    }
-
-    .section-header {
-        max-width: 650px;
-
-        margin-bottom: 45px;
-    }
-
-    .section-label {
-        color: #60a5fa;
-
-        font-size: 12px;
-
-        font-weight: 800;
-
-        text-transform: uppercase;
-
-        letter-spacing: 1.5px;
-
-        margin-bottom: 10px;
-    }
-
-    .section-title {
-        font-size:
-            clamp(30px, 4vw, 46px);
-
-        line-height: 1.1;
-
-        letter-spacing: -1.5px;
-
-        font-weight: 800;
-    }
-
-    .section-description {
-        margin-top: 14px;
-
-        color: #8fa3b8;
-
-        line-height: 1.7;
-
-        font-size: 15px;
-    }
-
-    /* =========================
-       PROBLEM
-    ========================= */
-
-    .problem-grid {
-        display: grid;
-
-        grid-template-columns:
-            repeat(3, 1fr);
-
-        gap: 17px;
-    }
-
-    .problem-card {
-        padding: 25px;
-
-        min-height: 205px;
-
-        border-radius: 18px;
-
-        border:
-            1px solid rgba(255, 255, 255, 0.07);
-
-        background:
-            rgba(255, 255, 255, 0.035);
-
-        transition: 0.25s;
-    }
-
-    .problem-card:hover {
-        transform: translateY(-5px);
-
-        background:
-            rgba(255, 255, 255, 0.055);
-
-        border-color:
-            rgba(96, 165, 250, 0.18);
-    }
-
-    .card-icon {
-        width: 45px;
-        height: 45px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 13px;
-
-        background:
-            rgba(37, 99, 235, 0.1);
-
-        font-size: 21px;
-
-        margin-bottom: 20px;
-    }
-
-    .problem-card h3 {
-        font-size: 17px;
-
-        margin-bottom: 9px;
-    }
-
-    .problem-card p {
-        color: #8194a8;
-
-        line-height: 1.6;
-
-        font-size: 13px;
-    }
-
-    /* =========================
-       HOW IT WORKS
-    ========================= */
-
-    .steps {
-        display: grid;
-
-        grid-template-columns:
-            repeat(3, 1fr);
-
-        gap: 18px;
-
-        counter-reset: step;
-    }
-
-    .step {
-        position: relative;
-
-        padding: 28px;
-
-        border-radius: 20px;
-
-        background:
-            linear-gradient(
-                145deg,
-                rgba(255, 255, 255, 0.055),
-                rgba(255, 255, 255, 0.025)
-            );
-
-        border:
-            1px solid rgba(255, 255, 255, 0.07);
-    }
-
-    .step-number {
-        width: 42px;
-        height: 42px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 50%;
-
-        background:
-            rgba(37, 99, 235, 0.13);
-
-        border:
-            1px solid rgba(96, 165, 250, 0.16);
-
-        color: #60a5fa;
-
-        font-weight: 800;
-
-        margin-bottom: 22px;
-    }
-
-    .step h3 {
-        font-size: 18px;
-
-        margin-bottom: 9px;
-    }
-
-    .step p {
-        color: #8194a8;
-
-        font-size: 13px;
-
-        line-height: 1.65;
-    }
-
-    /* =========================
-       BENEFITS
-    ========================= */
-
-    .benefits {
-        display: grid;
-
-        grid-template-columns:
-            0.9fr
-            1.1fr;
-
-        gap: 70px;
-
-        align-items: center;
-    }
-
-    .benefits-list {
-        display: grid;
-
-        gap: 15px;
-    }
-
-    .benefit {
-        display: flex;
-
-        gap: 14px;
-
-        padding: 17px;
-
-        border-radius: 15px;
-
-        background:
-            rgba(255, 255, 255, 0.035);
-
-        border:
-            1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .check {
-        flex-shrink: 0;
-
-        width: 28px;
-        height: 28px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 9px;
-
-        background:
-            rgba(37, 99, 235, 0.13);
-
-        color: #60a5fa;
-
-        font-size: 13px;
-    }
-
-    .benefit h4 {
-        font-size: 14px;
-
-        margin-bottom: 3px;
-    }
-
-    .benefit p {
-        color: #8194a8;
-
-        font-size: 12px;
-
-        line-height: 1.5;
-    }
-
-    .benefit-visual {
-        min-height: 360px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 25px;
-
-        background:
-            radial-gradient(
-                circle,
-                rgba(37, 99, 235, 0.15),
-                transparent 55%
-            );
-    }
-
-    .phone {
-        width: 220px;
-        height: 390px;
-
-        padding: 10px;
-
-        border-radius: 30px;
-
-        background: #0e1d2d;
-
-        border:
-            1px solid rgba(255, 255, 255, 0.1);
-
-        box-shadow:
-            0 25px 70px rgba(0, 0, 0, 0.35);
-
-        transform:
-            rotate(-4deg);
-    }
-
-    .phone-screen {
-        width: 100%;
-        height: 100%;
-
-        border-radius: 22px;
-
-        overflow: hidden;
-
-        background:
-            linear-gradient(
-                150deg,
-                #132c45,
-                #071321
-            );
-
-        position: relative;
-    }
-
-    .phone-top {
-        height: 55px;
-
-        padding: 17px;
-
-        font-size: 11px;
-        font-weight: 700;
-    }
-
-    .mini-map {
-        height: 190px;
-
-        position: relative;
-
-        background:
-            linear-gradient(
-                30deg,
-                transparent 40%,
-                rgba(255, 255, 255, 0.05) 41%,
-                rgba(255, 255, 255, 0.05) 44%,
-                transparent 45%
-            ),
-            linear-gradient(
-                140deg,
-                transparent 45%,
-                rgba(255, 255, 255, 0.04) 46%,
-                rgba(255, 255, 255, 0.04) 49%,
-                transparent 50%
-            );
-    }
-
-    .mini-pin {
-        position: absolute;
-
-        width: 22px;
-        height: 22px;
-
-        border-radius: 50%;
-
-        background: #2563eb;
-
-        border: 3px solid white;
-
-        box-shadow:
-            0 5px 15px rgba(37, 99, 235, 0.4);
-    }
-
-    .mini-pin.one {
-        left: 25%;
-        top: 35%;
-    }
-
-    .mini-pin.two {
-        right: 20%;
-        top: 55%;
-    }
-
-    .phone-bottom {
-        padding: 15px;
-    }
-
-    .phone-place {
-        font-size: 13px;
-
-        font-weight: 700;
-
-        margin-bottom: 5px;
-    }
-
-    .phone-free {
-        color: #7f93a8;
-
-        font-size: 10px;
-    }
-
-    .phone-button {
-        margin-top: 13px;
-
-        height: 34px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 9px;
-
-        background: #2563eb;
-
-        font-size: 11px;
-
-        font-weight: 700;
-    }
-
-    /* =========================
-       CTA
-    ========================= */
-
-    .cta {
-        max-width: 1130px;
-
-        margin:
-            35px auto 100px;
-
-        padding:
-            65px 35px;
-
-        text-align: center;
-
-        border-radius: 28px;
-
-        background:
-            radial-gradient(
-                circle at 50% 0%,
-                rgba(37, 99, 235, 0.2),
-                transparent 55%
-            ),
-            rgba(255, 255, 255, 0.035);
-
-        border:
-            1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .cta h2 {
-        font-size:
-            clamp(30px, 4vw, 45px);
-
-        letter-spacing: -1.5px;
-
-        margin-bottom: 13px;
-    }
-
-    .cta p {
-        max-width: 540px;
-
-        margin: auto;
-
-        color: #8fa3b8;
-
-        font-size: 14px;
-
-        line-height: 1.6;
-    }
-
-    .cta .primary-button {
-        margin-top: 25px;
-    }
-
-    /* =========================
-       FOOTER
-    ========================= */
-
-    footer {
-        border-top:
-            1px solid rgba(255, 255, 255, 0.06);
-
-        padding: 30px 25px;
-
-        color: #64788c;
-
-        font-size: 12px;
-    }
-
-    .footer-container {
-        max-width: 1180px;
-
-        margin: auto;
-
-        display: flex;
-
-        justify-content: space-between;
-
-        align-items: center;
-    }
-
-    .footer-brand {
-        color: #cbd5e1;
-
-        font-weight: 700;
-    }
-
-    /* =========================
-       RESPONSIVE
-    ========================= */
-
-    @media (max-width: 900px) {
+        .logo span {
+            color: #6b7280;
+        }
 
         .nav-links {
-            display: none;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+
+            color: #667085;
+            font-size: 14px;
+            font-weight: 600;
         }
 
-        .hero {
-            grid-template-columns: 1fr;
-
-            gap: 40px;
-
-            padding-top: 125px;
-
-            text-align: center;
+        .nav-links a {
+            transition: .2s ease;
         }
 
-        .hero-description {
-            margin-left: auto;
-            margin-right: auto;
+        .nav-links a:hover {
+            color: #111827;
         }
 
-        .hero-buttons {
-            justify-content: center;
-        }
-
-        .hero-visual {
-            min-height: 400px;
-        }
-
-        .benefits {
-            grid-template-columns: 1fr;
-
-            gap: 35px;
-        }
-
-        .benefit-visual {
-            order: -1;
-        }
-    }
-
-    @media (max-width: 700px) {
-
-        .problem-grid,
-        .steps {
-            grid-template-columns: 1fr;
-        }
-
-        .section {
-            padding:
-                70px 20px;
-        }
-
-        .hero {
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-
-        .hero h1 {
-            letter-spacing: -2px;
-        }
-
-        .map-card {
-            height: 350px;
-
-            transform: none;
-        }
-
-        .cta {
-            margin-left: 15px;
-            margin-right: 15px;
-
-            padding:
-                50px 22px;
-        }
-
-        .footer-container {
-            flex-direction: column;
-
+        .nav-actions {
+            display: flex;
+            align-items: center;
             gap: 10px;
-
-            text-align: center;
-        }
-    }
-
-    @media (max-width: 480px) {
-
-        .nav-container {
-            padding: 0 15px;
         }
 
-        .brand {
-            font-size: 18px;
+        .login-btn {
+            padding: 11px 17px;
+
+            color: #475467;
+
+            font-size: 14px;
+            font-weight: 700;
         }
 
-        .nav-login {
-            display: none;
+        .header-cta {
+            padding: 11px 18px;
+
+            border-radius: 11px;
+
+            background: #111827;
+            color: white;
+
+            font-size: 14px;
+            font-weight: 800;
+
+            transition: .25s ease;
         }
 
-        .nav-register {
-            padding:
-                9px 13px;
+        .header-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(17, 24, 39, .18);
         }
+
+        /* ================= HERO ================= */
 
         .hero {
-            padding-top: 115px;
+            position: relative;
+
+            min-height: 760px;
+
+            padding: 150px 20px 90px;
+
+            display: flex;
+            align-items: center;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 80% 20%,
+                    rgba(148, 163, 184, .20),
+                    transparent 34%
+                ),
+                linear-gradient(
+                    180deg,
+                    #ffffff 0%,
+                    #f7f8fa 100%
+                );
+        }
+
+        .hero::before {
+            content: "";
+
+            position: absolute;
+
+            width: 520px;
+            height: 520px;
+
+            right: -160px;
+            top: 80px;
+
+            border-radius: 50%;
+
+            background: rgba(17, 24, 39, .035);
+
+            filter: blur(2px);
+        }
+
+        .hero-container {
+            position: relative;
+
+            width: min(1180px, 100%);
+            margin: 0 auto;
+
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+
+            gap: 70px;
+
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 8px 12px;
+
+            margin-bottom: 22px;
+
+            border-radius: 999px;
+
+            background: #eef2f5;
+            color: #475467;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            animation: fadeUp .7s ease both;
+        }
+
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #111827;
         }
 
         .hero h1 {
-            font-size: 43px;
+            max-width: 700px;
+
+            font-size: clamp(44px, 6vw, 76px);
+            line-height: .98;
+            letter-spacing: -4px;
+
+            font-weight: 950;
+
+            animation: fadeUp .7s .08s ease both;
+        }
+
+        .hero h1 span {
+            color: #667085;
         }
 
         .hero-description {
-            font-size: 15px;
+            max-width: 570px;
+
+            margin-top: 25px;
+
+            color: #667085;
+
+            font-size: 18px;
+            line-height: 1.65;
+
+            animation: fadeUp .7s .16s ease both;
         }
 
-        .hero-buttons {
-            flex-direction: column;
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
 
-            width: 100%;
+            margin-top: 34px;
+
+            animation: fadeUp .7s .24s ease both;
         }
 
-        .primary-button,
-        .secondary-button {
-            width: 100%;
+        .primary-btn,
+        .secondary-btn {
+            min-height: 52px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 22px;
+
+            border-radius: 13px;
+
+            font-size: 14px;
+            font-weight: 850;
+
+            transition: .25s ease;
         }
+
+        .primary-btn {
+            background: #111827;
+            color: white;
+
+            box-shadow: 0 15px 30px rgba(17, 24, 39, .16);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 35px rgba(17, 24, 39, .22);
+        }
+
+        .secondary-btn {
+            background: white;
+            color: #344054;
+
+            border: 1px solid #e4e7ec;
+        }
+
+        .secondary-btn:hover {
+            transform: translateY(-3px);
+            border-color: #cbd0d8;
+        }
+
+        /* ================= HERO CARD ================= */
 
         .hero-visual {
-            min-height: 350px;
+            position: relative;
+
+            min-height: 500px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            animation: fadeIn .9s .2s ease both;
         }
 
-        .map-card {
-            height: 320px;
+        .phone-card {
+            position: relative;
+
+            width: min(390px, 100%);
+
+            padding: 18px;
+
+            border-radius: 34px;
+
+            background: #111827;
+
+            box-shadow:
+                0 40px 90px rgba(17, 24, 39, .20),
+                0 0 0 1px rgba(255,255,255,.08);
+
+            transform: rotate(2deg);
+
+            transition: .5s ease;
         }
 
-        .available-card {
-            right: 15px;
-            bottom: 15px;
+        .hero-visual:hover .phone-card {
+            transform: rotate(0deg) translateY(-7px);
+        }
+
+        .phone-screen {
+            overflow: hidden;
+
+            border-radius: 25px;
+
+            background: #f5f7fa;
+        }
+
+        .phone-top {
+            padding: 24px 22px 18px;
+
+            background: white;
+        }
+
+        .phone-top small {
+            color: #98a2b3;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .phone-top h3 {
+            margin-top: 6px;
+
+            font-size: 23px;
+            letter-spacing: -.7px;
+        }
+
+        .map {
+            position: relative;
+
+            height: 230px;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #e8edf1 25%,
+                    #f7f9fa 25%,
+                    #f7f9fa 50%,
+                    #e8edf1 50%,
+                    #e8edf1 75%,
+                    #f7f9fa 75%
+                );
+
+            background-size: 75px 75px;
+        }
+
+        .road {
+            position: absolute;
+
+            width: 130%;
+            height: 35px;
+
+            left: -15%;
+            top: 90px;
+
+            background: #ffffff;
+
+            transform: rotate(-16deg);
+
+            box-shadow: 0 0 0 1px #dfe3e8;
+        }
+
+        .road-two {
+            position: absolute;
+
+            width: 130%;
+            height: 24px;
+
+            left: -15%;
+            top: 155px;
+
+            background: #ffffff;
+
+            transform: rotate(12deg);
+
+            box-shadow: 0 0 0 1px #dfe3e8;
+        }
+
+        .map-pin {
+            position: absolute;
+
+            width: 45px;
+            height: 45px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 50% 50% 50% 0;
+
+            background: #111827;
+            color: white;
+
+            font-size: 18px;
+
+            transform: rotate(-45deg);
+
+            box-shadow: 0 10px 25px rgba(17, 24, 39, .22);
+        }
+
+        .map-pin span {
+            transform: rotate(45deg);
         }
 
         .pin-one {
-            left: 20%;
+            left: 26%;
+            top: 35%;
         }
 
         .pin-two {
-            right: 18%;
+            right: 20%;
+            top: 54%;
         }
-    }
-</style>
 
+        .phone-bottom {
+            padding: 20px;
 
+            background: white;
+        }
+
+        .parking-mini {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 14px;
+
+            border: 1px solid #eaecf0;
+            border-radius: 14px;
+        }
+
+        .parking-mini strong {
+            display: block;
+
+            font-size: 14px;
+        }
+
+        .parking-mini small {
+            display: block;
+
+            margin-top: 4px;
+
+            color: #98a2b3;
+            font-size: 11px;
+        }
+
+        .free {
+            padding: 7px 9px;
+
+            border-radius: 8px;
+
+            background: #f2f4f7;
+            color: #344054;
+
+            font-size: 10px;
+            font-weight: 850;
+        }
+
+        /* ================= STATS ================= */
+
+        .stats {
+            padding: 0 20px 80px;
+        }
+
+        .stats-grid {
+            width: min(1000px, 100%);
+            margin: -20px auto 0;
+
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+
+            overflow: hidden;
+
+            background: white;
+
+            border: 1px solid #eaecf0;
+            border-radius: 22px;
+
+            box-shadow: 0 20px 50px rgba(16, 24, 40, .06);
+        }
+
+        .stat {
+            padding: 30px;
+
+            text-align: center;
+
+            border-right: 1px solid #eaecf0;
+        }
+
+        .stat:last-child {
+            border-right: 0;
+        }
+
+        .stat strong {
+            display: block;
+
+            font-size: 30px;
+            letter-spacing: -1px;
+        }
+
+        .stat span {
+            display: block;
+
+            margin-top: 6px;
+
+            color: #667085;
+
+            font-size: 13px;
+        }
+
+        /* ================= SECTIONS ================= */
+
+        .section {
+            padding: 110px 20px;
+        }
+
+        .section-light {
+            background: white;
+        }
+
+        .section-container {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+        }
+
+        .section-heading {
+            max-width: 680px;
+            margin-bottom: 50px;
+        }
+
+        .eyebrow {
+            margin-bottom: 12px;
+
+            color: #667085;
+
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .section-heading h2 {
+            font-size: clamp(34px, 5vw, 52px);
+            line-height: 1.04;
+
+            letter-spacing: -2px;
+        }
+
+        .section-heading p {
+            margin-top: 17px;
+
+            color: #667085;
+
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        /* ================= FEATURES ================= */
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .feature {
+            padding: 30px;
+
+            background: #f8fafc;
+
+            border: 1px solid #eaecf0;
+            border-radius: 20px;
+
+            transition: .3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-6px);
+
+            background: white;
+
+            box-shadow: 0 20px 45px rgba(16, 24, 40, .08);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+
+            display: grid;
+            place-items: center;
+
+            margin-bottom: 22px;
+
+            border-radius: 14px;
+
+            background: #111827;
+            color: white;
+
+            font-size: 20px;
+        }
+
+        .feature h3 {
+            font-size: 18px;
+        }
+
+        .feature p {
+            margin-top: 10px;
+
+            color: #667085;
+
+            line-height: 1.65;
+            font-size: 14px;
+        }
+
+        /* ================= HOW ================= */
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .step {
+            position: relative;
+
+            padding: 30px;
+
+            border: 1px solid #eaecf0;
+            border-radius: 20px;
+
+            background: white;
+        }
+
+        .step-number {
+            color: #d0d5dd;
+
+            font-size: 48px;
+            font-weight: 950;
+
+            line-height: 1;
+        }
+
+        .step h3 {
+            margin-top: 25px;
+
+            font-size: 19px;
+        }
+
+        .step p {
+            margin-top: 10px;
+
+            color: #667085;
+
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+        /* ================= FORM ================= */
+
+        .application-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            gap: 60px;
+
+            align-items: center;
+        }
+
+        .application-text h2 {
+            font-size: clamp(35px, 5vw, 54px);
+            line-height: 1.04;
+            letter-spacing: -2px;
+        }
+
+        .application-text p {
+            max-width: 480px;
+
+            margin-top: 18px;
+
+            color: #667085;
+
+            line-height: 1.7;
+        }
+
+        .application-points {
+            display: grid;
+            gap: 12px;
+
+            margin-top: 25px;
+        }
+
+        .application-point {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            color: #475467;
+
+            font-size: 14px;
+            font-weight: 650;
+        }
+
+        .check {
+            width: 23px;
+            height: 23px;
+
+            display: grid;
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            background: #111827;
+            color: white;
+
+            font-size: 11px;
+        }
+
+        .form-card {
+            padding: 32px;
+
+            border-radius: 25px;
+
+            background: #111827;
+            color: white;
+
+            box-shadow: 0 30px 70px rgba(17, 24, 39, .18);
+        }
+
+        .form-card h3 {
+            font-size: 24px;
+        }
+
+        .form-card > p {
+            margin-top: 8px;
+
+            color: #98a2b3;
+
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .form {
+            display: grid;
+            gap: 13px;
+
+            margin-top: 25px;
+        }
+
+        .form input,
+        .form select {
+            width: 100%;
+
+            height: 50px;
+
+            padding: 0 15px;
+
+            border: 1px solid #344054;
+            border-radius: 11px;
+
+            outline: none;
+
+            background: #1d2939;
+            color: white;
+
+            font-family: inherit;
+            font-size: 13px;
+
+            transition: .2s;
+        }
+
+        .form input::placeholder {
+            color: #98a2b3;
+        }
+
+        .form input:focus,
+        .form select:focus {
+            border-color: #98a2b3;
+        }
+
+        .form button {
+            height: 52px;
+
+            margin-top: 5px;
+
+            border: 0;
+            border-radius: 12px;
+
+            background: white;
+            color: #111827;
+
+            font-weight: 900;
+
+            cursor: pointer;
+
+            transition: .25s;
+        }
+
+        .form button:hover {
+            transform: translateY(-2px);
+            background: #f2f4f7;
+        }
+
+        .form-message {
+            display: none;
+
+            margin-top: 12px;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            background: #1d2939;
+
+            color: #d0d5dd;
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* ================= CTA ================= */
+
+        .cta {
+            padding: 100px 20px;
+        }
+
+        .cta-box {
+            position: relative;
+
+            width: min(1100px, 100%);
+            margin: 0 auto;
+
+            overflow: hidden;
+
+            padding: 70px 50px;
+
+            border-radius: 30px;
+
+            background: #111827;
+            color: white;
+
+            text-align: center;
+        }
+
+        .cta-box::before,
+        .cta-box::after {
+            content: "";
+
+            position: absolute;
+
+            width: 260px;
+            height: 260px;
+
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 50%;
+        }
+
+        .cta-box::before {
+            left: -100px;
+            top: -100px;
+        }
+
+        .cta-box::after {
+            right: -100px;
+            bottom: -100px;
+        }
+
+        .cta-box-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-box h2 {
+            font-size: clamp(34px, 5vw, 52px);
+            letter-spacing: -2px;
+        }
+
+        .cta-box p {
+            max-width: 570px;
+            margin: 17px auto 28px;
+
+            color: #98a2b3;
+
+            line-height: 1.6;
+        }
+
+        /* ================= FOOTER ================= */
+
+        .footer {
+            padding: 35px 20px;
+
+            background: white;
+
+            border-top: 1px solid #eaecf0;
+        }
+
+        .footer-inner {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .footer-copy {
+            color: #98a2b3;
+
+            font-size: 12px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+
+            color: #667085;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .footer-links a:hover {
+            color: #111827;
+        }
+
+        /* ================= ANIMATIONS ================= */
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 850px) {
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                min-height: auto;
+
+                padding-top: 125px;
+                padding-bottom: 70px;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+
+                gap: 55px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2.5px;
+            }
+
+            .hero-description {
+                font-size: 16px;
+            }
+
+            .hero-visual {
+                min-height: 430px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat {
+                border-right: 0;
+                border-bottom: 1px solid #eaecf0;
+            }
+
+            .stat:last-child {
+                border-bottom: 0;
+            }
+
+            .features,
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .application-wrap {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-box {
+                padding: 55px 25px;
+            }
+        }
+
+        @media (max-width: 520px) {
+
+            .header {
+                height: 68px;
+            }
+
+            .nav {
+                width: min(100% - 25px, 1180px);
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+
+            .logo-mark {
+                width: 36px;
+                height: 36px;
+            }
+
+            .login-btn {
+                display: none;
+            }
+
+            .header-cta {
+                padding: 10px 13px;
+                font-size: 12px;
+            }
+
+            .hero {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .hero h1 {
+                font-size: 45px;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+            }
+
+            .primary-btn,
+            .secondary-btn {
+                width: 100%;
+            }
+
+            .phone-card {
+                padding: 12px;
+                border-radius: 25px;
+            }
+
+            .phone-screen {
+                border-radius: 19px;
+            }
+
+            .section {
+                padding: 80px 15px;
+            }
+
+            .form-card {
+                padding: 24px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="page-bg">
-    <div class="glow glow-one"></div>
-    <div class="glow glow-two"></div>
-</div>
+<!-- ================= HEADER ================= -->
 
-<!-- =========================
-     NAVBAR
-========================= -->
+<header class="header">
 
-<header class="navbar">
+    <nav class="nav">
 
+        <a href="/about/" class="logo">
+            <div class="logo-mark">P</div>
+            JOL<span>Park</span>
+        </a>
 
-<div class="nav-container">
-
-    <a href="{% url 'landing' %}" class="brand">
-
-        <div class="brand-icon">
-            🚗
+        <div class="nav-links">
+            <a href="#about">О продукте</a>
+            <a href="#how">Как работает</a>
+            <a href="#application">Заявка</a>
         </div>
 
-        <span>JOL Park</span>
+        <div class="nav-actions">
+            <a href="/login/" class="login-btn">
+                Войти
+            </a>
 
-    </a>
-
-
-    <nav class="nav-links">
-
-        <a href="#problem">
-            Проблема
-        </a>
-
-        <a href="#how">
-            Как работает
-        </a>
-
-        <a href="#benefits">
-            Возможности
-        </a>
+            <a href="/" class="header-cta">
+                Найти парковку
+            </a>
+        </div>
 
     </nav>
 
-
-    <div class="nav-actions">
-
-        <a
-            href="{% url 'login' %}"
-            class="nav-login"
-        >
-            Войти
-        </a>
-
-        <a
-            href="{% url 'register' %}"
-            class="nav-register"
-        >
-            Регистрация
-        </a>
-
-    </div>
-
-</div>
-
-
 </header>
 
-<!-- =========================
-     HERO
-========================= -->
 
-<main>
+<!-- ================= HERO ================= -->
 
 <section class="hero">
 
+    <div class="hero-container">
 
-<div class="hero-content">
+        <div>
 
-    <div class="badge">
-
-        <span class="badge-dot"></span>
-
-        Умная парковка в Бишкеке
-
-    </div>
-
-
-    <h1>
-
-        Парковка,
-        <span class="gradient-text">
-            без лишнего поиска.
-        </span>
-
-    </h1>
-
-
-    <p class="hero-description">
-
-        JOL Park помогает найти подходящую парковку,
-        посмотреть свободные места и забронировать место
-        заранее — прямо с телефона.
-
-    </p>
-
-
-    <div class="hero-buttons">
-
-        <a
-            href="{% url 'home' %}"
-            class="primary-button"
-        >
-            🚗 Открыть JOL Park
-        </a>
-
-        <a
-            href="#how"
-            class="secondary-button"
-        >
-            Как это работает
-        </a>
-
-    </div>
-
-</div>
-
-
-<!-- VISUAL -->
-
-<div class="hero-visual">
-
-    <div class="map-card">
-
-        <div class="map-lines"></div>
-
-        <div class="road"></div>
-        <div class="road road-two"></div>
-
-
-        <div class="map-label">
-
-            <strong>Бишкек</strong>
-
-            Поиск парковки
-
-        </div>
-
-
-        <div class="pin pin-one">
-            P
-        </div>
-
-        <div class="pin pin-two">
-            P
-        </div>
-
-        <div class="pin pin-three">
-            P
-        </div>
-
-
-        <div class="available-card">
-
-            <div class="available-top">
-
-                <span>
-                    Свободные места
-                </span>
-
-                <span>
-                    ● сейчас
-                </span>
-
+            <div class="badge">
+                <span class="badge-dot"></span>
+                Умная парковка для Бишкека
             </div>
 
-            <div class="available-number">
+            <h1>
+                Парковка
+                <span>без лишних кругов.</span>
+            </h1>
 
-                18
+            <p class="hero-description">
+                JOL Park помогает водителям найти свободное парковочное
+                место, выбрать нужную локацию и забронировать место заранее.
+            </p>
 
-                <span>
-                    мест
-                </span>
+            <div class="hero-actions">
 
-            </div>
+                <a href="/" class="primary-btn">
+                    Найти парковку →
+                </a>
 
-            <div class="available-bar">
-
-                <div class="available-progress"></div>
+                <a href="#about" class="secondary-btn">
+                    Узнать больше
+                </a>
 
             </div>
 
         </div>
 
-    </div>
 
-</div>
+        <!-- PHONE -->
 
+        <div class="hero-visual">
 
-</section>
+            <div class="phone-card">
 
-<!-- =========================
-     PROBLEM
-========================= -->
+                <div class="phone-screen">
 
-<section
-    class="section"
-    id="problem"
->
+                    <div class="phone-top">
 
+                        <small>JOL PARK</small>
 
-<div class="section-header">
+                        <h3>Парковки рядом</h3>
 
-    <div class="section-label">
-        Проблема
-    </div>
-
-    <h2 class="section-title">
-        Найти парковку иногда сложнее,
-        чем доехать до места.
-    </h2>
-
-    <p class="section-description">
-
-        JOL Park создан вокруг простой проблемы:
-        водитель хочет заранее понимать, где сможет
-        оставить автомобиль.
-
-    </p>
-
-</div>
-
-
-<div class="problem-grid">
-
-    <div class="problem-card">
-
-        <div class="card-icon">
-            🔎
-        </div>
-
-        <h3>
-            Долгий поиск
-        </h3>
-
-        <p>
-            Водителю приходится ездить по улицам
-            и искать свободное место уже после приезда.
-        </p>
-
-    </div>
-
-
-    <div class="problem-card">
-
-        <div class="card-icon">
-            🗺️
-        </div>
-
-        <h3>
-            Нет единой картины
-        </h3>
-
-        <p>
-            Информация о разных парковках может быть
-            разбросана по разным местам.
-        </p>
-
-    </div>
-
-
-    <div class="problem-card">
-
-        <div class="card-icon">
-            ⏱️
-        </div>
-
-        <h3>
-            Теряется время
-        </h3>
-
-        <p>
-            Чем дольше водитель ищет место,
-            тем больше времени уходит на обычную поездку.
-        </p>
-
-    </div>
-
-</div>
-
-
-</section>
-
-<!-- =========================
-     HOW IT WORKS
-========================= -->
-
-<section
-    class="section"
-    id="how"
->
-
-
-<div class="section-header">
-
-    <div class="section-label">
-        Как работает
-    </div>
-
-    <h2 class="section-title">
-        Три шага до парковочного места.
-    </h2>
-
-    <p class="section-description">
-
-        Мы старались сделать сценарий максимально
-        простым и понятным.
-
-    </p>
-
-</div>
-
-
-<div class="steps">
-
-    <div class="step">
-
-        <div class="step-number">
-            01
-        </div>
-
-        <h3>
-            Открой карту
-        </h3>
-
-        <p>
-            Найди нужную парковку на карте
-            и посмотри доступные места.
-        </p>
-
-    </div>
-
-
-    <div class="step">
-
-        <div class="step-number">
-            02
-        </div>
-
-        <h3>
-            Выбери место
-        </h3>
-
-        <p>
-            Посмотри парковочные места
-            и выбери подходящее.
-        </p>
-
-    </div>
-
-
-    <div class="step">
-
-        <div class="step-number">
-            03
-        </div>
-
-        <h3>
-            Забронируй
-        </h3>
-
-        <p>
-            Нажми кнопку бронирования
-            и закрепи место за собой.
-        </p>
-
-    </div>
-
-</div>
-
-
-</section>
-
-<!-- =========================
-     BENEFITS
-========================= -->
-
-<section
-    class="section"
-    id="benefits"
->
-
-
-<div class="benefits">
-
-    <div>
-
-        <div class="section-label">
-            JOL Park
-        </div>
-
-        <h2 class="section-title">
-            Всё необходимое
-            в одном месте.
-        </h2>
-
-        <p class="section-description">
-
-            MVP JOL Park объединяет карту,
-            парковочные локации и бронирование
-            в одном простом интерфейсе.
-
-        </p>
-
-
-        <div class="benefits-list">
-
-            <div class="benefit">
-
-                <div class="check">
-                    ✓
-                </div>
-
-                <div>
-
-                    <h4>
-                        Интерактивная карта
-                    </h4>
-
-                    <p>
-                        Парковки отображаются прямо на карте города.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="benefit">
-
-                <div class="check">
-                    ✓
-                </div>
-
-                <div>
-
-                    <h4>
-                        Свободные места
-                    </h4>
-
-                    <p>
-                        Можно посмотреть доступность парковочных мест.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="benefit">
-
-                <div class="check">
-                    ✓
-                </div>
-
-                <div>
-
-                    <h4>
-                        Бронирование
-                    </h4>
-
-                    <p>
-                        Выбранное место можно забронировать через приложение.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="benefit">
-
-                <div class="check">
-                    ✓
-                </div>
-
-                <div>
-
-                    <h4>
-                        Работает с телефона
-                    </h4>
-
-                    <p>
-                        Никакой установки — сервис открывается в браузере.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- PHONE -->
-
-    <div class="benefit-visual">
-
-        <div class="phone">
-
-            <div class="phone-screen">
-
-                <div class="phone-top">
-                    JOL Park
-                </div>
-
-
-                <div class="mini-map">
-
-                    <div class="mini-pin one"></div>
-
-                    <div class="mini-pin two"></div>
-
-                </div>
-
-
-                <div class="phone-bottom">
-
-                    <div class="phone-place">
-                        Bishkek Park
                     </div>
 
-                    <div class="phone-free">
-                        Свободно мест: 3
+                    <div class="map">
+
+                        <div class="road"></div>
+                        <div class="road-two"></div>
+
+                        <div class="map-pin pin-one">
+                            <span>P</span>
+                        </div>
+
+                        <div class="map-pin pin-two">
+                            <span>P</span>
+                        </div>
+
                     </div>
 
-                    <div class="phone-button">
-                        Выбрать место
+                    <div class="phone-bottom">
+
+                        <div class="parking-mini">
+
+                            <div>
+                                <strong>Asia Mall</strong>
+                                <small>пр. Чынгыза Айтматова, 3</small>
+                            </div>
+
+                            <div class="free">
+                                Свободно
+                            </div>
+
+                        </div>
+
                     </div>
 
                 </div>
@@ -1904,60 +1278,407 @@
 
     </div>
 
-</div>
+</section>
 
+
+<!-- ================= STATS ================= -->
+
+<section class="stats">
+
+    <div class="stats-grid">
+
+        <div class="stat">
+            <strong>3+</strong>
+            <span>парковочные локации</span>
+        </div>
+
+        <div class="stat">
+            <strong>30+</strong>
+            <span>парковочных мест</span>
+        </div>
+
+        <div class="stat">
+            <strong>24/7</strong>
+            <span>доступ к сервису</span>
+        </div>
+
+    </div>
 
 </section>
 
-<!-- =========================
-     CTA
-========================= -->
+
+<!-- ================= ABOUT ================= -->
+
+<section class="section section-light" id="about">
+
+    <div class="section-container">
+
+        <div class="section-heading">
+
+            <div class="eyebrow">
+                Почему JOL Park
+            </div>
+
+            <h2>
+                Меньше поиска.
+                Больше времени.
+            </h2>
+
+            <p>
+                Мы создаём цифровой сервис, который соединяет водителя
+                с парковкой ещё до того, как он подъедет к месту.
+            </p>
+
+        </div>
+
+
+        <div class="features">
+
+            <article class="feature">
+
+                <div class="feature-icon">
+                    ⌖
+                </div>
+
+                <h3>
+                    Найдите место
+                </h3>
+
+                <p>
+                    Посмотрите доступные парковки на карте и выберите
+                    подходящую локацию.
+                </p>
+
+            </article>
+
+
+            <article class="feature">
+
+                <div class="feature-icon">
+                    ✓
+                </div>
+
+                <h3>
+                    Забронируйте заранее
+                </h3>
+
+                <p>
+                    Выберите конкретное парковочное место и подтвердите
+                    бронирование онлайн.
+                </p>
+
+            </article>
+
+
+            <article class="feature">
+
+                <div class="feature-icon">
+                    ◷
+                </div>
+
+                <h3>
+                    Экономьте время
+                </h3>
+
+                <p>
+                    Не нужно несколько раз объезжать парковку в поисках
+                    свободного места.
+                </p>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= HOW IT WORKS ================= -->
+
+<section class="section" id="how">
+
+    <div class="section-container">
+
+        <div class="section-heading">
+
+            <div class="eyebrow">
+                Как это работает
+            </div>
+
+            <h2>
+                Три шага до парковки.
+            </h2>
+
+            <p>
+                JOL Park делает процесс максимально простым —
+                от поиска до подтверждённого места.
+            </p>
+
+        </div>
+
+
+        <div class="steps">
+
+            <article class="step">
+
+                <div class="step-number">
+                    01
+                </div>
+
+                <h3>
+                    Выберите локацию
+                </h3>
+
+                <p>
+                    Откройте карту и найдите удобную парковку рядом
+                    с нужным местом.
+                </p>
+
+            </article>
+
+
+            <article class="step">
+
+                <div class="step-number">
+                    02
+                </div>
+
+                <h3>
+                    Выберите место
+                </h3>
+
+                <p>
+                    Посмотрите доступные парковочные места и выберите
+                    подходящее.
+                </p>
+
+            </article>
+
+
+            <article class="step">
+
+                <div class="step-number">
+                    03
+                </div>
+
+                <h3>
+                    Забронируйте
+                </h3>
+
+                <p>
+                    Подтвердите бронирование и приезжайте уже зная,
+                    где будете парковаться.
+                </p>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= APPLICATION ================= -->
+
+<section class="section section-light" id="application">
+
+    <div class="section-container">
+
+        <div class="application-wrap">
+
+            <div class="application-text">
+
+                <div class="eyebrow">
+                    Ранний доступ
+                </div>
+
+                <h2>
+                    Хотите попробовать JOL Park?
+                </h2>
+
+                <p>
+                    Оставьте заявку. Мы собираем первых пользователей,
+                    чтобы улучшить сервис перед масштабированием.
+                </p>
+
+                <div class="application-points">
+
+                    <div class="application-point">
+                        <span class="check">✓</span>
+                        Бесплатное участие в тестировании
+                    </div>
+
+                    <div class="application-point">
+                        <span class="check">✓</span>
+                        Возможность предложить свои идеи
+                    </div>
+
+                    <div class="application-point">
+                        <span class="check">✓</span>
+                        Первые обновления продукта
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-card">
+
+                <h3>
+                    Оставить заявку
+                </h3>
+
+                <p>
+                    Заполните форму — это займёт меньше минуты.
+                </p>
+
+
+                <form class="form" id="applicationForm">
+
+                    <input
+                        type="text"
+                        id="name"
+                        placeholder="Ваше имя"
+                        required
+                    >
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        placeholder="Номер телефона"
+                        required
+                    >
+
+                    <select id="role" required>
+
+                        <option value="">
+                            Кто вы?
+                        </option>
+
+                        <option value="driver">
+                            Водитель
+                        </option>
+
+                        <option value="business">
+                            Владелец бизнеса
+                        </option>
+
+                        <option value="other">
+                            Другое
+                        </option>
+
+                    </select>
+
+                    <button type="submit">
+                        Отправить заявку →
+                    </button>
+
+                </form>
+
+                <div
+                    class="form-message"
+                    id="formMessage"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CTA ================= -->
 
 <section class="cta">
 
+    <div class="cta-box">
 
-<h2>
-    Попробуй JOL Park
-</h2>
+        <div class="cta-box-content">
 
-<p>
-    Открой карту, найди парковку
-    и попробуй забронировать место.
-</p>
+            <h2>
+                Готовы перестать искать парковку?
+            </h2>
 
-<a
-    href="{% url 'home' %}"
-    class="primary-button"
->
-    🚗 Перейти в приложение
-</a>
+            <p>
+                Откройте JOL Park, выберите локацию и найдите
+                свободное место прямо сейчас.
+            </p>
 
+            <a href="/" class="primary-btn">
+                Открыть JOL Park →
+            </a>
+
+        </div>
+
+    </div>
 
 </section>
 
-</main>
 
-<!-- =========================
-     FOOTER
-========================= -->
+<!-- ================= FOOTER ================= -->
 
-<footer>
+<footer class="footer">
 
+    <div class="footer-inner">
 
-<div class="footer-container">
+        <div class="footer-copy">
+            © 2026 JOL Park. Бишкек, Кыргызстан.
+        </div>
 
-    <div class="footer-brand">
-        🚗 JOL Park
+        <div class="footer-links">
+            <a href="/">Парковка</a>
+            <a href="#about">О проекте</a>
+            <a href="#application">Заявка</a>
+        </div>
+
     </div>
-
-    <div>
-        MVP-проект • Бишкек • 2026
-    </div>
-
-</div>
-
 
 </footer>
+
+
+<script>
+
+    /*
+     * Пока форма работает как frontend-demo:
+     * после отправки пользователь получает подтверждение.
+     *
+     * Позже можно подключить POST endpoint Django,
+     * если понадобится сохранять заявки в PostgreSQL.
+     */
+
+    const form = document.getElementById("applicationForm");
+    const message = document.getElementById("formMessage");
+
+    form.addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const name = document.getElementById("name").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const role = document.getElementById("role").value;
+
+        if (!name || !phone || !role) {
+            message.style.display = "block";
+            message.textContent = "Пожалуйста, заполните все поля.";
+            return;
+        }
+
+        message.style.display = "block";
+        message.textContent =
+            "Спасибо, " +
+            name +
+            "! Заявка принята. Мы свяжемся с вами.";
+
+        form.reset();
+
+    });
+
+</script>
 
 </body>
 </html>
