@@ -627,66 +627,64 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================
 
     function showBookingPanel() {
-        if (
-            !spotsContainer ||
-            !selectedSpot
-        ) {
-            return;
-        }
-
-        const oldPanel =
-            spotsContainer.querySelector(
-                ".booking-panel"
-            );
-
-        if (oldPanel) {
-            oldPanel.remove();
-        }
-
-        const panel =
-            document.createElement("div");
-
-        panel.className =
-            "booking-panel";
-
-        const number =
-            selectedSpot.number ||
-            selectedSpot.name ||
-            ("#" + selectedSpot.id);
-
-        panel.innerHTML =
-            "<div>" +
-
-            "<small>Выбранное место</small>" +
-
-            "<strong>" +
-            escapeHtml(String(number)) +
-            "</strong>" +
-
-            "</div>" +
-
-            '<button ' +
-            'type="button" ' +
-            'class="book-button">' +
-            "Забронировать" +
-            "</button>";
-
-        const button =
-            panel.querySelector(
-                ".book-button"
-            );
-
-        button.addEventListener(
-            "click",
-            function () {
-                showConfirmation();
-            }
-        );
-
-        spotsContainer.appendChild(
-            panel
-        );
+    if (!spotsContainer || !selectedSpot) {
+        console.error("Нет spotsContainer или selectedSpot");
+        return;
     }
+
+    // Удаляем старую панель
+    const oldPanel = spotsContainer.querySelector(".booking-panel");
+
+    if (oldPanel) {
+        oldPanel.remove();
+    }
+
+    // Создаём новую панель
+    const panel = document.createElement("div");
+    panel.className = "booking-panel";
+
+    const number =
+        selectedSpot.number ||
+        selectedSpot.name ||
+        ("#" + selectedSpot.id);
+
+    panel.innerHTML = `
+        <div class="selected-spot-info">
+            <small>Выбранное место</small>
+            <strong>${escapeHtml(String(number))}</strong>
+        </div>
+
+        <button
+            type="button"
+            id="book-button"
+            class="book-button"
+        >
+            Забронировать
+        </button>
+    `;
+
+    const button = panel.querySelector("#book-button");
+
+    if (!button) {
+        console.error("❌ Кнопка #book-button не найдена");
+        return;
+    }
+
+    button.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        console.log("✅ Кнопка бронирования нажата");
+        console.log("📍 Парковка:", selectedLocation);
+        console.log("🚗 Место:", selectedSpot);
+
+        showConfirmation();
+    });
+
+    spotsContainer.appendChild(panel);
+
+    console.log("✅ Панель бронирования создана");
+}
 
 
     // ==========================================
