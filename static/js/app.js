@@ -64,10 +64,11 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
         L.tileLayer(
-            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
             {
                 maxZoom: 19,
-                attribution: "&copy; OpenStreetMap contributors"
+                attribution:
+                    '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
             }
         ).addTo(map);
     }
@@ -567,10 +568,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         spotsContainer.appendChild(grid);
 
-        /*
-         * Показываем активное бронирование
-         * пользователя, если API его возвращает.
-         */
         if (selectedLocation) {
             loadMyBooking(selectedLocation.id);
         }
@@ -627,64 +624,72 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================
 
     function showBookingPanel() {
-    if (!spotsContainer || !selectedSpot) {
-        console.error("Нет spotsContainer или selectedSpot");
-        return;
+        if (!spotsContainer || !selectedSpot) {
+            console.error(
+                "Нет spotsContainer или selectedSpot"
+            );
+            return;
+        }
+
+        const oldPanel =
+            spotsContainer.querySelector(
+                ".booking-panel"
+            );
+
+        if (oldPanel) {
+            oldPanel.remove();
+        }
+
+        const panel =
+            document.createElement("div");
+
+        panel.className =
+            "booking-panel";
+
+        const number =
+            selectedSpot.number ||
+            selectedSpot.name ||
+            ("#" + selectedSpot.id);
+
+        panel.innerHTML = `
+            <div class="selected-spot-info">
+                <small>Выбранное место</small>
+                <strong>${escapeHtml(String(number))}</strong>
+            </div>
+
+            <button
+                type="button"
+                id="book-button"
+                class="book-button"
+            >
+                Забронировать
+            </button>
+        `;
+
+        const button =
+            panel.querySelector(
+                "#book-button"
+            );
+
+        if (!button) {
+            console.error(
+                "Кнопка #book-button не найдена"
+            );
+            return;
+        }
+
+        button.addEventListener(
+            "click",
+            function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                showConfirmation();
+            }
+        );
+
+        spotsContainer.appendChild(panel);
     }
-
-    // Удаляем старую панель
-    const oldPanel = spotsContainer.querySelector(".booking-panel");
-
-    if (oldPanel) {
-        oldPanel.remove();
-    }
-
-    // Создаём новую панель
-    const panel = document.createElement("div");
-    panel.className = "booking-panel";
-
-    const number =
-        selectedSpot.number ||
-        selectedSpot.name ||
-        ("#" + selectedSpot.id);
-
-    panel.innerHTML = `
-        <div class="selected-spot-info">
-            <small>Выбранное место</small>
-            <strong>${escapeHtml(String(number))}</strong>
-        </div>
-
-        <button
-            type="button"
-            id="book-button"
-            class="book-button"
-        >
-            Забронировать
-        </button>
-    `;
-
-    const button = panel.querySelector("#book-button");
-
-    if (!button) {
-        console.error("❌ Кнопка #book-button не найдена");
-        return;
-    }
-
-    button.addEventListener("click", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        console.log("✅ Кнопка бронирования нажата");
-        console.log("📍 Парковка:", selectedLocation);
-        console.log("🚗 Место:", selectedSpot);
-
-        showConfirmation();
-    });
-
-    spotsContainer.appendChild(panel);
-
-    console.log("✅ Панель бронирования создана");
-}
 
 
     // ==========================================
@@ -692,7 +697,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================
 
     function showConfirmation() {
-        console.log("🔥 showConfirmation ЗАПУЩЕН");
         if (
             !selectedSpot ||
             !selectedLocation
@@ -1070,82 +1074,106 @@ document.addEventListener("DOMContentLoaded", function () {
     // CANCEL BOOKING
     // ==========================================
 
-    async function cancelBooking(bookingId, button) {
-    if (!isAuthenticated) {
-        window.location.href = "/login/";
-        return;
-    }
+    async function cancelBooking(
+        bookingId,
+        button
+    ) {
+        if (!isAuthenticated) {
+            window.location.href =
+                "/login/";
 
-    const confirmed = window.confirm(
-        "Вы действительно хотите отменить бронирование?"
-    );
-
-    if (!confirmed) {
-        return;
-    }
-
-    button.disabled = true;
-    button.innerHTML = "⏳ Отмена...";
-
-    try {
-        const csrfToken = getCookie("csrftoken");
-
-        const headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        };
-
-        if (csrfToken) {
-            headers["X-CSRFToken"] = csrfToken;
+            return;
         }
 
-        const response = await fetch(
-            "/api/bookings/" + bookingId + "/cancel/",
-            {
-                method: "POST",
-                headers: headers,
-                credentials: "same-origin"
-            }
-        );
+        const confirmed =
+            window.confirm(
+                "Вы действительно хотите отменить бронирование?"
+            );
 
-        let data = {};
+        if (!confirmed) {
+            return;
+        }
+
+        button.disabled = true;
+        button.innerHTML = "⏳ Отмена...";
 
         try {
-            data = await response.json();
-        } catch (error) {
-            data = {};
-        }
+            const csrfToken =
+                getCookie("csrftoken");
 
-        if (!response.ok) {
-            throw new Error(
-                data.message ||
-                data.detail ||
-                data.error ||
-                "Не удалось отменить бронирование."
+            const headers = {
+                "Accept":
+                    "application/json",
+
+                "Content-Type":
+                    "application/json"
+            };
+
+            if (csrfToken) {
+                headers["X-CSRFToken"] =
+                    csrfToken;
+            }
+
+            const response =
+                await fetch(
+                    "/api/bookings/" +
+                    bookingId +
+                    "/cancel/",
+                    {
+                        method: "POST",
+                        headers: headers,
+                        credentials:
+                            "same-origin"
+                    }
+                );
+
+            let data = {};
+
+            try {
+                data =
+                    await response.json();
+            } catch (error) {
+                data = {};
+            }
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message ||
+                    data.detail ||
+                    data.error ||
+                    "Не удалось отменить бронирование."
+                );
+            }
+
+            button.innerHTML =
+                "✓ Бронирование отменено";
+
+            button.classList.add(
+                "cancelled"
+            );
+
+            await loadLocations();
+
+            if (selectedLocation) {
+                await loadSpots(
+                    selectedLocation.id
+                );
+            }
+
+        } catch (error) {
+            console.error(error);
+
+            button.disabled = false;
+
+            button.innerHTML =
+                "↩ Отменить бронирование";
+
+            alert(
+                error.message ||
+                "Ошибка отмены бронирования."
             );
         }
-
-        button.innerHTML = "✓ Бронирование отменено";
-        button.classList.add("cancelled");
-
-        await loadLocations();
-
-        if (selectedLocation) {
-            await loadSpots(selectedLocation.id);
-        }
-
-    } catch (error) {
-        console.error(error);
-
-        button.disabled = false;
-        button.innerHTML = "↩ Отменить бронирование";
-
-        alert(
-            error.message ||
-            "Ошибка отмены бронирования."
-        );
     }
-}
 
 
     // ==========================================
@@ -1337,4 +1365,3 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadLocations();
 });
-
