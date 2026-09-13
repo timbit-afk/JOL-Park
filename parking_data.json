@@ -5,8 +5,8 @@
   "fields": {
     "name": "Asia Mall",
     "address": "пр. Чынгыза Айтматова, 3",
-    "latitude": 42.8588,
-    "longitude": 74.582
+    "latitude": 42.8556,
+    "longitude": 74.5850
   }
 },
 {
@@ -16,7 +16,7 @@
     "name": "Bishkek Park",
     "address": "ул. Киевская, 148",
     "latitude": 42.8746,
-    "longitude": 74.6007
+    "longitude": 74.5903
   }
 },
 {
@@ -25,8 +25,8 @@
   "fields": {
     "name": "Vefa Center",
     "address": "ул. Горького, 27/1",
-    "latitude": 42.8636,
-    "longitude": 74.603
+    "latitude": 42.8574,
+    "longitude": 74.6095
   }
 },
 {
