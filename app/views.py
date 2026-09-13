@@ -1,3 +1,5 @@
+import os
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -24,11 +26,23 @@ from .serializers import (
 # ==========================================
 
 def home(request):
-    return render(request, "index.html")
+    return render(
+        request,
+        "index.html",
+        {
+            "maptiler_api_key": os.getenv(
+                "MAPTILER_API_KEY",
+                ""
+            )
+        }
+    )
 
 
 def landing(request):
-    return render(request, "landing.html")
+    return render(
+        request,
+        "landing.html"
+    )
 
 
 # ==========================================
@@ -112,7 +126,10 @@ def register_view(request):
             password=password
         )
 
-        login(request, user)
+        login(
+            request,
+            user
+        )
 
         return redirect("home")
 
@@ -151,7 +168,10 @@ def login_view(request):
 
         if user is not None:
 
-            login(request, user)
+            login(
+                request,
+                user
+            )
 
             return redirect("home")
 
@@ -185,9 +205,7 @@ def logout_view(request):
 @permission_classes([AllowAny])
 def locations(request):
 
-    parking_locations = (
-        ParkingLocation.objects.all()
-    )
+    parking_locations = ParkingLocation.objects.all()
 
     serializer = ParkingLocationSerializer(
         parking_locations,
@@ -243,7 +261,6 @@ def book_spot(
         id=spot_id
     )
 
-    # Проверяем занятость
     if spot.is_occupied:
 
         return Response(
@@ -254,8 +271,6 @@ def book_spot(
             status=400
         )
 
-    # Проверяем, есть ли у пользователя
-    # уже активная бронь
     existing_booking = Booking.objects.filter(
         user=request.user,
         status="active"
@@ -275,15 +290,14 @@ def book_spot(
             status=400
         )
 
-    # Создаем бронь
     booking = Booking.objects.create(
         user=request.user,
         spot=spot,
         status="active"
     )
 
-    # Занимаем место
     spot.is_occupied = True
+
     spot.save(
         update_fields=["is_occupied"]
     )
@@ -329,25 +343,19 @@ def my_bookings(request):
 
                 "status": booking.status,
 
-                "created_at":
-                    booking.created_at,
+                "created_at": booking.created_at,
 
                 "spot": {
-                    "id":
-                        booking.spot.id,
+                    "id": booking.spot.id,
 
-                    "number":
-                        booking.spot.number,
+                    "number": booking.spot.number,
 
-                    "location":
-                        booking.spot.location.id
+                    "location": booking.spot.location.id
                 },
 
-                "spot_number":
-                    booking.spot.number,
+                "spot_number": booking.spot.number,
 
-                "location_id":
-                    booking.spot.location.id
+                "location_id": booking.spot.location.id
             }
         )
 
@@ -383,14 +391,14 @@ def cancel_booking(
 
     spot = booking.spot
 
-    # Отменяем бронь
     booking.status = "cancelled"
+
     booking.save(
         update_fields=["status"]
     )
 
-    # Освобождаем место
     spot.is_occupied = False
+
     spot.save(
         update_fields=["is_occupied"]
     )

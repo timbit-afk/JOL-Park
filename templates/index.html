@@ -1678,6 +1678,10 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+<script>
+    window.MAPTILER_API_KEY = "{{ maptiler_api_key|escapejs }}";
+</script>
+
 <script src="{% static 'js/app.js' %}"></script>
 
 </body>

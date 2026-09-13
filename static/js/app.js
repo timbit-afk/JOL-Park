@@ -15,11 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const isAuthenticated =
         document.body.dataset.authenticated === "true";
 
-
-    // ==========================================
-    // CSRF
-    // ==========================================
-
     function getCookie(name) {
         const cookies = document.cookie.split(";");
 
@@ -35,11 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return null;
     }
-
-
-    // ==========================================
-    // MAP
-    // ==========================================
 
     function initMap() {
         const mapElement = document.getElementById("map");
@@ -58,25 +48,35 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        const maptilerKey = window.MAPTILER_API_KEY;
+
+        if (!maptilerKey) {
+            console.error("MAPTILER_API_KEY не настроен.");
+
+            mapElement.innerHTML =
+                '<div class="error">Карта временно недоступна.</div>';
+
+            return;
+        }
+
         map = L.map("map").setView(
             [42.8746, 74.5698],
             13
         );
 
         L.tileLayer(
-            "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            `https://api.maptiler.com/maps/streets-v4/{z}/{x}/{y}.png?key=${maptilerKey}`,
             {
+                tileSize: 512,
+                zoomOffset: -1,
+                minZoom: 1,
                 maxZoom: 19,
                 attribution:
-                    '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+                    '&copy; <a href="https://www.maptiler.com/copyright/" target="_blank">MapTiler</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
+                crossOrigin: true
             }
         ).addTo(map);
     }
-
-
-    // ==========================================
-    // LOAD LOCATIONS
-    // ==========================================
 
     async function loadLocations() {
         if (!parkingGrid) {
@@ -129,11 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
-    // ==========================================
-    // RENDER LOCATIONS
-    // ==========================================
-
     function renderLocations() {
         if (!parkingGrid) {
             return;
@@ -161,22 +156,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
             card.innerHTML =
                 '<div class="parking-card-icon">🅿️</div>' +
-
                 "<h3>" +
                 escapeHtml(location.name) +
                 "</h3>" +
-
                 '<p class="parking-address">' +
                 escapeHtml(location.address || "") +
                 "</p>" +
-
                 '<div class="parking-info">' +
                 '<span class="available">' +
                 available +
                 " свободных мест" +
                 "</span>" +
                 "</div>" +
-
                 '<button type="button" class="parking-button">' +
                 "Выбрать место" +
                 "</button>";
@@ -201,11 +192,6 @@ document.addEventListener("DOMContentLoaded", function () {
             parkingGrid.appendChild(card);
         });
     }
-
-
-    // ==========================================
-    // MAP MARKERS
-    // ==========================================
 
     function renderMarkers() {
         if (!map) {
@@ -243,31 +229,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
             marker.bindPopup(
                 '<div style="min-width:190px">' +
-
                 "<strong>" +
                 escapeHtml(location.name) +
                 "</strong>" +
-
                 "<br>" +
-
                 escapeHtml(
                     location.address || ""
                 ) +
-
                 "<br><br>" +
-
                 "<b>" +
                 available +
                 "</b> свободных мест" +
-
                 "<br><br>" +
-
                 '<button ' +
                 'type="button" ' +
                 'class="map-book-button">' +
                 "Выбрать место" +
                 "</button>" +
-
                 "</div>"
             );
 
@@ -301,11 +279,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-
-    // ==========================================
-    // FOCUS LOCATION
-    // ==========================================
-
     function focusLocation(location) {
         if (!map) {
             return;
@@ -332,11 +305,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         );
     }
-
-
-    // ==========================================
-    // OPEN PARKING
-    // ==========================================
 
     async function openParking(location) {
         selectedLocation = location;
@@ -384,11 +352,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         await loadSpots(location.id);
     }
-
-
-    // ==========================================
-    // LOAD SPOTS
-    // ==========================================
 
     async function loadSpots(locationId) {
         try {
@@ -450,11 +413,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
-    // ==========================================
-    // RENDER SPOTS
-    // ==========================================
-
     function renderSpots(spots) {
         if (!spotsContainer) {
             return;
@@ -491,15 +449,12 @@ document.addEventListener("DOMContentLoaded", function () {
             "Всего: <b>" +
             spots.length +
             "</b> &nbsp; " +
-
             '<span style="color:#16a34a">' +
             "Свободно: <b>" +
             freeSpots.length +
             "</b>" +
             "</span>" +
-
             " &nbsp; " +
-
             '<span style="color:#dc2626">' +
             "Занято: <b>" +
             occupiedSpots.length +
@@ -539,7 +494,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 "<strong>" +
                 escapeHtml(String(number)) +
                 "</strong>" +
-
                 "<small>" +
                 (
                     occupied
@@ -573,11 +527,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
-    // ==========================================
-    // CHECK OCCUPIED
-    // ==========================================
-
     function isSpotOccupied(spot) {
         return (
             spot.is_occupied === true ||
@@ -587,11 +536,6 @@ document.addEventListener("DOMContentLoaded", function () {
             spot.status === "Занято"
         );
     }
-
-
-    // ==========================================
-    // SELECT SPOT
-    // ==========================================
 
     function selectSpot(
         spot,
@@ -617,11 +561,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         showBookingPanel();
     }
-
-
-    // ==========================================
-    // BOOKING PANEL
-    // ==========================================
 
     function showBookingPanel() {
         if (!spotsContainer || !selectedSpot) {
@@ -656,7 +595,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 <small>Выбранное место</small>
                 <strong>${escapeHtml(String(number))}</strong>
             </div>
-
             <button
                 type="button"
                 id="book-button"
@@ -691,11 +629,6 @@ document.addEventListener("DOMContentLoaded", function () {
         spotsContainer.appendChild(panel);
     }
 
-
-    // ==========================================
-    // CONFIRM BOOKING
-    // ==========================================
-
     function showConfirmation() {
         if (
             !selectedSpot ||
@@ -726,49 +659,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
         overlay.innerHTML =
             '<div class="confirmation">' +
-
             '<div class="confirmation-icon">' +
             "🅿️" +
             "</div>" +
-
             "<h3>Подтвердить бронирование?</h3>" +
-
             "<p>" +
-
             "<strong>" +
             escapeHtml(
                 selectedLocation.name
             ) +
             "</strong>" +
-
             "<br>" +
-
             "Место: " +
-
             "<strong>" +
             escapeHtml(
                 String(number)
             ) +
             "</strong>" +
-
             "</p>" +
-
             '<div class="confirmation-buttons">' +
-
             '<button ' +
             'type="button" ' +
             'class="cancel-button">' +
             "Отмена" +
             "</button>" +
-
             '<button ' +
             'type="button" ' +
             'class="confirm-button">' +
             "Подтвердить" +
             "</button>" +
-
             "</div>" +
-
             "</div>";
 
         const cancelButton =
@@ -804,11 +724,6 @@ document.addEventListener("DOMContentLoaded", function () {
         );
     }
 
-
-    // ==========================================
-    // BOOK SPOT
-    // ==========================================
-
     async function bookSpot(
         spotId,
         button,
@@ -833,7 +748,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const headers = {
                 "Accept":
                     "application/json",
-
                 "Content-Type":
                     "application/json"
             };
@@ -850,13 +764,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     "/book/",
                     {
                         method: "POST",
-
-                        headers:
-                            headers,
-
+                        headers: headers,
                         credentials:
                             "same-origin",
-
                         body:
                             JSON.stringify({})
                     }
@@ -904,11 +814,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
-    // ==========================================
-    // LOAD MY BOOKING
-    // ==========================================
-
     async function loadMyBooking(locationId) {
         if (!isAuthenticated) {
             return;
@@ -920,12 +825,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     "/api/bookings/my/",
                     {
                         method: "GET",
-
                         headers: {
                             "Accept":
                                 "application/json"
                         },
-
                         credentials:
                             "same-origin"
                     }
@@ -986,11 +889,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
-    // ==========================================
-    // SHOW ACTIVE BOOKING
-    // ==========================================
-
     function showActiveBooking(
         booking
     ) {
@@ -1032,17 +930,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         panel.innerHTML =
             "<div>" +
-
             "<small>Ваше активное бронирование</small>" +
-
             "<strong>" +
             escapeHtml(
                 String(number)
             ) +
             "</strong>" +
-
             "</div>" +
-
             '<button ' +
             'type="button" ' +
             'class="cancel-booking-button">' +
@@ -1068,11 +962,6 @@ document.addEventListener("DOMContentLoaded", function () {
             panel
         );
     }
-
-
-    // ==========================================
-    // CANCEL BOOKING
-    // ==========================================
 
     async function cancelBooking(
         bookingId,
@@ -1104,7 +993,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const headers = {
                 "Accept":
                     "application/json",
-
                 "Content-Type":
                     "application/json"
             };
@@ -1175,11 +1063,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
-    // ==========================================
-    // SUCCESS
-    // ==========================================
-
     function showSuccess(data) {
         const reservationNumber =
             data.booking_id ||
@@ -1200,19 +1083,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         overlay.innerHTML =
             '<div class="confirmation">' +
-
             '<div class="success-icon">' +
             "✓" +
             "</div>" +
-
             "<h3>Бронирование подтверждено!</h3>" +
-
             "<p>" +
             escapeHtml(
                 String(message)
             ) +
             "</p>" +
-
             (
                 reservationNumber
                     ? "<p>" +
@@ -1227,13 +1106,11 @@ document.addEventListener("DOMContentLoaded", function () {
                       "</p>"
                     : ""
             ) +
-
             '<button ' +
             'type="button" ' +
             'class="confirm-button">' +
             "Готово" +
             "</button>" +
-
             "</div>";
 
         const button =
@@ -1258,11 +1135,6 @@ document.addEventListener("DOMContentLoaded", function () {
         );
     }
 
-
-    // ==========================================
-    // CLOSE MODAL
-    // ==========================================
-
     window.closeParkingModal =
         function () {
             if (parkingModal) {
@@ -1283,11 +1155,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         };
 
-
-    // ==========================================
-    // CLOSE BUTTON
-    // ==========================================
-
     const modalClose =
         document.getElementById(
             "modal-close"
@@ -1302,16 +1169,10 @@ document.addEventListener("DOMContentLoaded", function () {
         );
     }
 
-
-    // ==========================================
-    // ESCAPE
-    // ==========================================
-
     document.addEventListener(
         "keydown",
         function (event) {
             if (event.key === "Escape") {
-
                 const confirmation =
                     document.querySelector(
                         ".confirmation-overlay"
@@ -1326,11 +1187,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     );
-
-
-    // ==========================================
-    // HTML SAFETY
-    // ==========================================
 
     function escapeHtml(value) {
         return String(value)
@@ -1356,12 +1212,6 @@ document.addEventListener("DOMContentLoaded", function () {
             );
     }
 
-
-    // ==========================================
-    // START
-    // ==========================================
-
     initMap();
-
     loadLocations();
 });
